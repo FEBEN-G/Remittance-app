@@ -16,8 +16,9 @@ const navItems = [
 export function BottomNav() {
   const pathname = usePathname();
 
-  // Hide bottom nav on landing page
-  if (pathname === "/") return null;
+  // Hide bottom nav on landing page and auth pages
+  const hiddenPaths = ["/", "/login", "/register"];
+  if (hiddenPaths.includes(pathname)) return null;
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden safe-area-inset-bottom">
