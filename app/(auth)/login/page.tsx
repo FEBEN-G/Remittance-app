@@ -3,20 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Loader2, TrendingUp } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Separator } from "@/components/ui/separator";
+import { Mail, Loader2 } from "lucide-react";
 import { PinInput } from "@/components/pin-input";
+import {
+  Form,
+  Input as AntInput,
+  Button as AntButton,
+  Checkbox as AntCheckbox,
+  Card as AntCard,
+  Divider,
+} from "antd";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/store";
 import { mockExchangeRate, mockUser } from "@/lib/mock-data";
@@ -26,21 +22,16 @@ export default function LoginPage() {
   const { setUser } = useAuth();
   const [step, setStep] = useState<"email" | "pin">("email");
   const [email, setEmail] = useState("");
-  const [pin, setPin] = useState("");
-  const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleEmailSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email) {
-      toast.error("Please enter your email address");
-      return;
-    }
+  const [form] = Form.useForm();
+
+  const handleEmailSubmit = (values: any) => {
+    setEmail(values.email);
     setStep("pin");
   };
 
   const handlePinComplete = async (pinValue: string) => {
-    setPin(pinValue);
     setIsLoading(true);
 
     // Simulate API call
@@ -55,127 +46,144 @@ export default function LoginPage() {
     router.push("/home");
   };
 
-  const rate = mockExchangeRate;
-
   return (
-    <div className="space-y-6">
-      {/* Login Form */}
-      <Card>
-        <CardHeader className="text-center">
-          <CardTitle className="text-2xl">Welcome Back</CardTitle>
-          <CardDescription>
-            {step === "email"
-              ? "Enter your email to continue"
-              : "Enter your PIN to login"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {step === "email" ? (
-            <form onSubmit={handleEmailSubmit} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10"
-                    autoComplete="email"
-                    autoFocus
-                  />
-                </div>
-              </div>
+    <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
+      <AntCard
+        className="overflow-hidden border-border/40 bg-background/60 backdrop-blur-xl shadow-2xl rounded-[1.5rem]"
+        styles={{
+          header: {
+            textAlign: "center",
+            borderBottom: "none",
+            paddingTop: "2.5rem",
+          },
+          body: { padding: "1.5rem 2.5rem 2.5rem" },
+        }}
+        title={
+          <div className="space-y-1">
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              Welcome Back
+            </h1>
+            <p className="text-sm font-normal text-muted-foreground">
+              {step === "email"
+                ? "Enter your email to continue"
+                : "Enter your PIN to login"}
+            </p>
+          </div>
+        }
+      >
+        {step === "email" ? (
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={handleEmailSubmit}
+            requiredMark={false}
+            className="space-y-4"
+          >
+            <Form.Item
+              label={<span className="text-sm font-medium">Email Address</span>}
+              name="email"
+              rules={[
+                { required: true, message: "Please enter your email address" },
+                { type: "email", message: "Please enter a valid email" },
+              ]}
+            >
+              <AntInput
+                prefix={<Mail className="h-4 w-4 text-muted-foreground mr-2" />}
+                placeholder="you@example.com"
+                size="large"
+                className="h-12 rounded-xl bg-muted/50 border-border/40 hover:border-primary focus:border-primary"
+              />
+            </Form.Item>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="remember"
-                  checked={rememberMe}
-                  onCheckedChange={(checked) => setRememberMe(checked === true)}
-                />
-                <Label
-                  htmlFor="remember"
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  Remember me
-                </Label>
-              </div>
+            <Form.Item name="remember" valuePropName="checked" noStyle>
+              <AntCheckbox className="text-sm">Remember me</AntCheckbox>
+            </Form.Item>
 
-              <Button type="submit" className="w-full" size="lg">
+            <Form.Item className="mt-8 mb-0">
+              <AntButton
+                type="primary"
+                htmlType="submit"
+                size="large"
+                block
+                className="h-12 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20 hover:scale-[1.02] transition-transform"
+              >
                 Continue
-              </Button>
-            </form>
-          ) : (
-            <div className="space-y-6">
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-1">
-                  Logging in as
-                </p>
-                <p className="font-medium">{email}</p>
-                <Button
-                  variant="link"
-                  size="sm"
-                  onClick={() => setStep("email")}
-                  className="text-primary"
-                >
-                  Change email
-                </Button>
-              </div>
-
-              <div className="flex justify-center">
-                <PinInput
-                  value={pin}
-                  onChange={setPin}
-                  onComplete={handlePinComplete}
-                  disabled={isLoading}
-                />
-              </div>
-
-              {isLoading && (
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>Verifying...</span>
-                </div>
-              )}
-
-              <div className="text-center">
-                <Link
-                  href="/forgot-pin"
-                  className="text-sm text-primary hover:underline"
-                >
-                  Forgot PIN?
-                </Link>
-              </div>
+              </AntButton>
+            </Form.Item>
+          </Form>
+        ) : (
+          <div className="space-y-8">
+            <div className="text-center">
+              <p className="text-sm text-muted-foreground mb-1">
+                Logging in as
+              </p>
+              <p className="text-lg font-semibold text-foreground">{email}</p>
+              <AntButton
+                type="link"
+                size="small"
+                onClick={() => setStep("email")}
+                className="text-primary p-0 h-auto font-medium"
+              >
+                Change email
+              </AntButton>
             </div>
-          )}
 
-          <div className="mt-6">
-            <Separator className="my-4" />
-            <p className="text-center text-sm text-muted-foreground">
+            <div className="flex justify-center">
+              <PinInput onComplete={handlePinComplete} disabled={isLoading} />
+            </div>
+
+            {isLoading && (
+              <div className="flex items-center justify-center gap-2 text-muted-foreground animate-pulse">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span className="text-sm font-medium">Verifying...</span>
+              </div>
+            )}
+
+            <div className="text-center">
+              <Link
+                href="/forgot-pin"
+                className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Forgot PIN?
+              </Link>
+            </div>
+          </div>
+        )}
+
+        <div className="mt-8">
+          <Divider
+            plain
+            className="text-muted-foreground text-xs uppercase tracking-widest font-medium opacity-50"
+          >
+            Or
+          </Divider>
+          <div className="text-center space-y-4">
+            <p className="text-sm text-muted-foreground">
               {"Don't have an account?"}{" "}
               <Link
                 href="/register"
-                className="text-primary font-medium hover:underline"
+                className="text-primary font-bold hover:underline decoration-2"
               >
                 Sign up
               </Link>
             </p>
-          </div>
 
-          <div className="mt-4">
-            <Link href="/dashboard">
-              <Button variant="outline" className="w-full">
-                Continue as Guest
-              </Button>
-            </Link>
-            <p className="text-center text-xs text-muted-foreground mt-2">
-              View exchange rates without signing in
-            </p>
+            <div className="pt-2">
+              <Link href="/dashboard">
+                <AntButton
+                  block
+                  className="h-12 rounded-xl border-border/40 hover:border-primary/50 hover:bg-primary/5 transition-all text-sm font-medium"
+                >
+                  Continue as Guest
+                </AntButton>
+              </Link>
+              <p className="text-center text-[11px] text-muted-foreground mt-3 font-medium uppercase tracking-tight opacity-70">
+                View exchange rates without signing in
+              </p>
+            </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
     </div>
   );
 }

@@ -6,9 +6,21 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-muted/30">
+    <div className="relative min-h-screen flex flex-col overflow-hidden bg-background text-foreground selection:bg-primary/30">
+      {/* Dynamic Background */}
+      <div className="pointer-events-none fixed inset-0 -z-10 flex justify-center">
+        <div
+          className="absolute top-[-20%] h-[50rem] w-[50rem] rounded-full bg-primary/5 blur-[120px] animate-pulse"
+          style={{ animationDuration: "10s" }}
+        />
+        <div
+          className="absolute right-[-10%] top-[40%] h-[30rem] w-[30rem] rounded-full bg-secondary/5 blur-[100px] animate-pulse"
+          style={{ animationDuration: "8s" }}
+        />
+      </div>
+
       {/* Header */}
-      <header className="w-full border-b border-border/50 bg-background/80 backdrop-blur-xl">
+      <header className="w-full border-b border-border/40 bg-background/60 backdrop-blur-xl">
         <div className="container flex h-16 items-center justify-between px-4 md:px-6">
           <Link href="/" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-lg shadow-primary/20">
@@ -30,7 +42,7 @@ export default function AuthLayout({
 
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-4 py-8 md:py-12">
-        <div className="w-full max-w-md">{children}</div>
+        <div className="w-full max-w-2xl">{children}</div>
       </main>
 
       {/* Footer */}

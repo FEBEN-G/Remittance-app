@@ -4,13 +4,8 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/store";
 import { Navbar } from "@/components/navbar";
-import { BottomNav } from "@/components/bottom-nav";
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AppLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const { user, isLoading } = useAuth();
 
@@ -28,19 +23,23 @@ export default function AppLayout({
           <div className="relative">
             <div className="absolute inset-0 animate-ping rounded-2xl bg-primary/20" />
             <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-2xl shadow-primary/30">
-              <span className="text-2xl font-bold text-primary-foreground">W</span>
+              <span className="text-2xl font-bold text-primary-foreground">
+                W
+              </span>
             </div>
           </div>
-          
+
           {/* Loading Dots */}
           <div className="flex items-center gap-1.5">
             <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.3s]" />
             <div className="h-2 w-2 animate-bounce rounded-full bg-primary [animation-delay:-0.15s]" />
             <div className="h-2 w-2 animate-bounce rounded-full bg-primary" />
           </div>
-          
+
           {/* Loading Text */}
-          <p className="text-sm font-medium text-muted-foreground">Loading your dashboard...</p>
+          <p className="text-sm font-medium text-muted-foreground">
+            Loading your dashboard...
+          </p>
         </div>
       </div>
     );
@@ -49,10 +48,7 @@ export default function AppLayout({
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
-      <main className="flex-1 pb-24 md:pb-0">
-        {children}
-      </main>
-      <BottomNav />
+      <main className="flex-1">{children}</main>
     </div>
   );
 }
