@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { DollarSign, ArrowDown, Delete } from "lucide-react";
+import { DollarSign, ArrowDown, Delete, TrendingUp } from "lucide-react";
 import { Card as AntCard, Button as AntButton } from "antd";
 import type { ExchangeRate } from "@/types";
 
@@ -122,77 +122,92 @@ export function AmountInput({
         {/* Send Amount */}
         <AntCard
           className={cn(
-            "cursor-pointer transition-all duration-300 rounded-[1.5rem] border-border/40 bg-background/60 backdrop-blur-md shadow-lg",
+            "group cursor-pointer transition-all duration-500 rounded-[2rem] border-border/40 bg-background/40 backdrop-blur-xl shadow-2xl",
             activeCurrency === "USD"
-              ? "ring-2 ring-primary scale-[1.02] shadow-primary/20"
-              : "hover:bg-muted/30 opacity-80 scale-100",
+              ? "ring-2 ring-primary/40 scale-[1.03] shadow-primary/20 bg-primary/[0.03]"
+              : "hover:bg-muted/30 opacity-70 scale-[0.98] grayscale-[0.2]",
           )}
           onClick={() => setActiveCurrency("USD")}
-          styles={{ body: { padding: "1rem 1.25rem" } }}
+          styles={{ body: { padding: "1.25rem 1.5rem" } }}
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+            <div className="space-y-1">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">
                 You send
               </p>
-              <div className="flex items-center gap-1">
-                <DollarSign className="h-5 w-5 text-primary opacity-80" />
+              <div className="flex items-baseline gap-2">
                 <span
                   className={cn(
-                    "text-3xl font-black tracking-tight",
+                    "text-4xl font-black tracking-tight transition-colors duration-300",
                     isOverLimit ? "text-destructive" : "text-foreground",
                   )}
                 >
+                  <span className="text-2xl font-bold opacity-40 mr-1">$</span>
                   {activeCurrency === "USD"
                     ? displayValue || "0"
                     : sendAmount || "0"}
                 </span>
-                <span className="text-lg font-bold text-muted-foreground ml-1">
-                  USD
-                </span>
+                <span className="text-sm font-black text-primary/60">USD</span>
               </div>
+            </div>
+            <div
+              className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-500",
+                activeCurrency === "USD"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/30 rotate-0"
+                  : "bg-muted text-muted-foreground rotate-12 opacity-50",
+              )}
+            >
+              <DollarSign className="h-6 w-6" />
             </div>
           </div>
         </AntCard>
 
         {/* Arrow (Floating overlay) */}
         <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-background border border-border shadow-md">
-            <ArrowDown className="h-4 w-4 text-primary" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-background border-4 border-muted shadow-xl group-hover:scale-110 transition-transform duration-500">
+            <ArrowDown className="h-5 w-5 text-primary animate-bounce-subtle" />
           </div>
         </div>
 
         {/* Receive Amount */}
         <AntCard
           className={cn(
-            "cursor-pointer transition-all duration-300 rounded-[1.5rem] border-border/40 bg-background/60 backdrop-blur-md shadow-lg",
+            "group cursor-pointer transition-all duration-500 rounded-[2rem] border-border/40 bg-background/40 backdrop-blur-xl shadow-2xl",
             activeCurrency === "ETB"
-              ? "ring-2 ring-secondary scale-[1.02] shadow-secondary/20"
-              : "hover:bg-muted/30 opacity-80 scale-100",
+              ? "ring-2 ring-secondary/40 scale-[1.03] shadow-secondary/20 bg-secondary/[0.03]"
+              : "hover:bg-muted/30 opacity-70 scale-[0.98] grayscale-[0.2]",
           )}
           onClick={() => setActiveCurrency("ETB")}
-          styles={{ body: { padding: "1rem 1.25rem" } }}
+          styles={{ body: { padding: "1.25rem 1.5rem" } }}
         >
           <div className="flex items-center justify-between">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
+            <div className="space-y-1">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">
                 They receive
               </p>
-              <div className="flex items-center gap-2">
-                <span className="text-3xl font-black tracking-tight text-foreground">
+              <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black tracking-tight text-foreground transition-colors duration-300">
                   {activeCurrency === "ETB"
                     ? displayValue || "0"
                     : receiveAmount
                       ? parseFloat(receiveAmount).toLocaleString()
                       : "0"}
                 </span>
-                <span className="text-lg font-bold text-muted-foreground ml-1">
+                <span className="text-sm font-black text-secondary/60">
                   ETB
                 </span>
               </div>
             </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/10">
-              <span className="text-xl font-bold text-secondary">ብ</span>
+            <div
+              className={cn(
+                "flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-500",
+                activeCurrency === "ETB"
+                  ? "bg-secondary text-secondary-foreground shadow-lg shadow-secondary/30 rotate-0"
+                  : "bg-muted text-muted-foreground -rotate-12 opacity-50",
+              )}
+            >
+              <span className="text-2xl font-black">ብ</span>
             </div>
           </div>
         </AntCard>
@@ -200,13 +215,20 @@ export function AmountInput({
 
       {/* Exchange Rate Info */}
       {exchangeRate && (
-        <div className="rounded-xl flex items-center justify-center gap-2 bg-primary/5 border border-primary/10 p-3 text-sm">
-          <span className="text-muted-foreground font-medium">
-            Exchange Rate:
-          </span>
-          <span className="font-bold text-primary">
-            1 USD = {effectiveRate.toFixed(2)} ETB
-          </span>
+        <div className="rounded-2xl flex items-center justify-center gap-3 bg-primary/5 border border-primary/10 p-4 text-sm backdrop-blur-sm animate-in fade-in zoom-in duration-500">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+            <TrendingUp className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex flex-col">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60 leading-none mb-1">
+              Guaranteed Rate
+            </span>
+            <span className="font-black text-foreground">
+              1 USD ={" "}
+              <span className="text-primary">{effectiveRate.toFixed(2)}</span>{" "}
+              ETB
+            </span>
+          </div>
         </div>
       )}
 
@@ -240,23 +262,28 @@ export function AmountInput({
         </div>
 
         {/* Custom Dial Pad */}
-        <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto w-full px-4">
+        <div className="grid grid-cols-3 gap-4 max-w-sm mx-auto w-full px-4">
           {keys.flat().map((key) => (
             <div key={key} className="flex justify-center">
               <button
                 type="button"
                 className={cn(
-                  "flex items-center justify-center w-[72px] h-[72px] rounded-full text-2xl font-semibold transition-all duration-200 select-none",
-                  "bg-background border border-border/40 shadow-sm",
-                  "hover:bg-primary/5 hover:border-primary/30",
-                  "active:bg-primary/20 active:scale-90",
+                  "group relative flex items-center justify-center w-[76px] h-[76px] rounded-3xl text-2xl font-bold transition-all duration-300 select-none overflow-hidden",
+                  "bg-background/40 backdrop-blur-xl border border-border/40 shadow-[0_4px_12px_rgba(0,0,0,0.05)]",
+                  "hover:bg-primary/5 hover:border-primary/30 hover:shadow-primary/10 hover:-translate-y-1",
+                  "active:bg-primary/20 active:scale-90 active:duration-75",
+                  key === "delete" &&
+                    "bg-destructive/[0.02] hover:bg-destructive/5 hover:border-destructive/20",
                 )}
                 onClick={() => handleKeyPress(key)}
               >
+                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                 {key === "delete" ? (
-                  <Delete className="h-6 w-6 text-foreground/80" />
+                  <Delete className="h-7 w-7 text-foreground/80 group-active:text-destructive transition-colors" />
                 ) : (
-                  <span className="text-foreground">{key}</span>
+                  <span className="text-foreground group-active:text-primary transition-colors">
+                    {key}
+                  </span>
                 )}
               </button>
             </div>

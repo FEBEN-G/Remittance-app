@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
-  Menu,
   X,
   Globe,
   LogOut,
@@ -13,27 +12,21 @@ import {
   Home,
   Send,
   History,
+  Shield,
   TrendingUp,
+  ArrowLeft,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
+  Button as AntButton,
+  Dropdown,
+  Avatar as AntAvatar,
+  Badge as AntBadge,
+  Drawer,
+  Space,
+  Menu as AntMenu,
+} from "antd";
+import type { MenuProps } from "antd";
 import { cn } from "@/lib/utils";
 import { useAuth, useNotifications } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
@@ -47,7 +40,6 @@ const navLinks = [
 export function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const { user, logout } = useAuth();
   const { unreadCount } = useNotifications();
@@ -62,31 +54,69 @@ export function Navbar() {
     router.push("/login");
   };
 
+  const userMenuItems: MenuProps["items"] = [
+    {
+      key: "user-info",
+      label: (
+        <div className="flex flex-col px-1 py-1">
+          <span className="font-bold text-foreground">
+            {user?.firstName} {user?.lastName}
+          </span>
+          <span className="text-xs font-normal text-muted-foreground">
+            {user?.email}
+          </span>
+        </div>
+      ),
+      disabled: true,
+    },
+    { type: "divider" },
+    {
+      key: "profile",
+      icon: <User className="h-4 w-4" />,
+      label: <Link href="/profile">{t("nav.profile")}</Link>,
+    },
+    {
+      key: "settings",
+      icon: <Settings className="h-4 w-4" />,
+      label: <Link href="/profile/settings">{t("nav.settings")}</Link>,
+    },
+    { type: "divider" },
+    {
+      key: "logout",
+      icon: <LogOut className="h-4 w-4 text-destructive" />,
+      label: (
+        <span className="text-destructive font-medium">{t("nav.logout")}</span>
+      ),
+      onClick: handleLogout,
+    },
+  ];
+
+  const languageItems: MenuProps["items"] = [
+    {
+      key: "lang-title",
+      label: <span className="font-bold">{t("common.language")}</span>,
+      disabled: true,
+    },
+    { type: "divider" },
+    {
+      key: "en",
+      label: "English",
+      onClick: () => setLocale("en"),
+      className: locale === "en" ? "bg-muted" : "",
+    },
+    {
+      key: "am",
+      label: "Amharic",
+      onClick: () => setLocale("am"),
+      className: locale === "am" ? "bg-muted" : "",
+    },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/60">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 border-b border-border/40 bg-background/60 backdrop-blur-xl supports-[backdrop-filter]:bg-background/40">
+      <div className="container mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo and Back */}
         <div className="flex items-center gap-4">
-          <Link
-            href="/"
-            className="flex items-center justify-center h-10 w-10 rounded-xl hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-arrow-left"
-            >
-              <path d="m12 19-7-7 7-7" />
-              <path d="M19 12H5" />
-            </svg>
-          </Link>
           <Link href="/home" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-secondary shadow-lg shadow-primary/20">
               <span className="text-lg font-bold text-primary-foreground">
@@ -108,16 +138,18 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           {navLinks.map((link) => (
             <Link key={link.href} href={link.href}>
-              <Button
-                variant="ghost"
+              <AntButton
+                type="text"
                 className={cn(
-                  "gap-2",
-                  pathname === link.href && "bg-muted text-primary",
+                  "gap-2 h-10 px-4 rounded-xl flex items-center font-medium",
+                  pathname === link.href
+                    ? "bg-primary/10 text-primary"
+                    : "text-muted-foreground hover:text-foreground",
                 )}
               >
                 <link.icon className="h-4 w-4" />
                 {link.label}
-              </Button>
+              </AntButton>
             </Link>
           ))}
         </nav>
@@ -125,172 +157,64 @@ export function Navbar() {
         {/* Right Side Actions */}
         <div className="flex items-center gap-2">
           {/* Notifications */}
-          <Button variant="ghost" size="icon" className="relative" asChild>
-            <Link href="/notifications">
-              <Bell className="h-5 w-5" />
-              {unreadCount > 0 && (
-                <Badge
-                  variant="destructive"
-                  className="absolute -right-1 -top-1 h-5 w-5 items-center justify-center p-0 text-xs"
+          <Link href="/notifications">
+            <AntButton
+              type="text"
+              icon={
+                <AntBadge
+                  count={unreadCount > 9 ? "9+" : unreadCount}
+                  size="small"
+                  offset={[2, 0]}
+                  className="notification-badge"
                 >
-                  {unreadCount > 9 ? "9+" : unreadCount}
-                </Badge>
-              )}
-            </Link>
-          </Button>
+                  <Bell className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+                </AntBadge>
+              }
+              className="h-10 w-10 flex items-center justify-center rounded-xl hover:bg-muted"
+            />
+          </Link>
 
           {/* Language Selector */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <Globe className="h-5 w-5" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>{t("common.language")}</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={() => setLocale("en")}
-                className={locale === "en" ? "bg-muted" : ""}
-              >
-                English
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={() => setLocale("am")}
-                className={locale === "am" ? "bg-muted" : ""}
-              >
-                Amharic
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <Dropdown
+            menu={{ items: languageItems }}
+            trigger={["click"]}
+            placement="bottomRight"
+          >
+            <AntButton
+              type="text"
+              icon={
+                <Globe className="h-5 w-5 text-muted-foreground hover:text-foreground transition-colors" />
+              }
+              className="h-10 w-10 flex items-center justify-center rounded-xl hover:bg-muted"
+            />
+          </Dropdown>
 
           {/* User Menu - Desktop */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="hidden md:flex">
-                <Avatar className="h-8 w-8 border border-border">
-                  <AvatarFallback className="bg-primary text-xs text-primary-foreground">
-                    {initials}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel className="flex flex-col">
-                <span>
-                  {user?.firstName} {user?.lastName}
-                </span>
-                <span className="text-xs font-normal text-muted-foreground">
-                  {user?.email}
-                </span>
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link href="/profile" className="flex items-center gap-2">
-                  <User className="h-4 w-4" />
-                  {t("nav.profile")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link
-                  href="/profile/settings"
-                  className="flex items-center gap-2"
-                >
-                  <Settings className="h-4 w-4" />
-                  {t("nav.settings")}
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem
-                onClick={handleLogout}
-                className="flex items-center gap-2 text-destructive focus:text-destructive"
+          <div className="hidden md:block">
+            <Dropdown
+              menu={{ items: userMenuItems }}
+              trigger={["click"]}
+              placement="bottomRight"
+              arrow
+            >
+              <AntButton
+                type="text"
+                className="h-10 px-2 rounded-xl hover:bg-muted"
               >
-                <LogOut className="h-4 w-4" />
-                {t("nav.logout")}
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-          {/* Mobile Menu */}
-          <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px]">
-              <SheetHeader>
-                <SheetTitle className="text-left">Menu</SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col gap-4 py-4">
-                {/* User Info */}
-                <div className="flex items-center gap-3 rounded-lg bg-muted p-3">
-                  <Avatar className="h-10 w-10 border border-border">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {initials}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="font-medium">
-                      {user?.firstName} {user?.lastName}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      {user?.email}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Navigation Links */}
-                <nav className="flex flex-col gap-1">
-                  {navLinks.map((link) => (
-                    <Link
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Button
-                        variant="ghost"
-                        className={cn(
-                          "w-full justify-start gap-3",
-                          pathname === link.href && "bg-muted text-primary",
-                        )}
-                      >
-                        <link.icon className="h-5 w-5" />
-                        {link.label}
-                      </Button>
-                    </Link>
-                  ))}
-                </nav>
-
-                {/* Bottom Actions */}
-                <div className="mt-auto flex flex-col gap-1 border-t border-border pt-4">
-                  <Link
-                    href="/profile"
-                    onClick={() => setMobileMenuOpen(false)}
+                <Space>
+                  <AntAvatar
+                    size="small"
+                    className="bg-primary text-[10px] font-bold text-primary-foreground"
                   >
-                    <Button
-                      variant="ghost"
-                      className="w-full justify-start gap-3"
-                    >
-                      <User className="h-5 w-5" />
-                      {t("nav.profile")}
-                    </Button>
-                  </Link>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-start gap-3 text-destructive hover:text-destructive"
-                    onClick={() => {
-                      setMobileMenuOpen(false);
-                      handleLogout();
-                    }}
-                  >
-                    <LogOut className="h-5 w-5" />
-                    {t("nav.logout")}
-                  </Button>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+                    {initials}
+                  </AntAvatar>
+                  <span className="text-sm font-semibold truncate max-w-[100px]">
+                    {user?.firstName}
+                  </span>
+                </Space>
+              </AntButton>
+            </Dropdown>
+          </div>
         </div>
       </div>
     </header>

@@ -2,7 +2,22 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Search, Filter, Download, ChevronDown, Calendar, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  Filter,
+  Download,
+  ChevronDown,
+  Calendar,
+  X,
+} from "lucide-react";
+import {
+  Pagination as AntPagination,
+  Button as AntButton,
+  Card as AntCard,
+  Input as AntInput,
+  Typography,
+} from "antd";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,12 +46,18 @@ import { mockTransactions } from "@/lib/mock-data";
 import type { Transaction, TransactionStatus } from "@/types";
 import { toast } from "sonner";
 
+const { Text, Title } = Typography;
+
 export default function TransactionsPage() {
   const { t } = useLocale();
   const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [filteredTransactions, setFilteredTransactions] = useState<Transaction[]>([]);
+  const [filteredTransactions, setFilteredTransactions] = useState<
+    Transaction[]
+  >([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<TransactionStatus | "all">("all");
+  const [statusFilter, setStatusFilter] = useState<TransactionStatus | "all">(
+    "all",
+  );
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -67,19 +88,19 @@ export default function TransactionsPage() {
       filtered = filtered.filter(
         (tx) =>
           tx.receiverName.toLowerCase().includes(query) ||
-          tx.referenceNumber.toLowerCase().includes(query)
+          tx.referenceNumber.toLowerCase().includes(query),
       );
     }
 
     // Apply date range filter
     if (dateFrom) {
       filtered = filtered.filter(
-        (tx) => new Date(tx.createdAt) >= new Date(dateFrom)
+        (tx) => new Date(tx.createdAt) >= new Date(dateFrom),
       );
     }
     if (dateTo) {
       filtered = filtered.filter(
-        (tx) => new Date(tx.createdAt) <= new Date(dateTo + "T23:59:59")
+        (tx) => new Date(tx.createdAt) <= new Date(dateTo + "T23:59:59"),
       );
     }
 
@@ -93,7 +114,10 @@ export default function TransactionsPage() {
     setActiveFilters(count);
   }, [transactions, statusFilter, searchQuery, dateFrom, dateTo]);
 
-  const statusOptions: Array<{ value: TransactionStatus | "all"; label: string }> = [
+  const statusOptions: Array<{
+    value: TransactionStatus | "all";
+    label: string;
+  }> = [
     { value: "all", label: t("transactions.allStatuses") },
     { value: "completed", label: t("transactions.status.completed") },
     { value: "pending", label: t("transactions.status.pending") },
@@ -107,7 +131,8 @@ export default function TransactionsPage() {
       total: transactions.length,
       completed: transactions.filter((tx) => tx.status === "completed").length,
       pending: transactions.filter((tx) => tx.status === "pending").length,
-      processing: transactions.filter((tx) => tx.status === "processing").length,
+      processing: transactions.filter((tx) => tx.status === "processing")
+        .length,
     };
   };
 
@@ -120,7 +145,15 @@ export default function TransactionsPage() {
 
   const exportTransactions = () => {
     const csvContent = [
-      ["Reference", "Date", "Receiver", "Amount USD", "Amount ETB", "Fee", "Status"],
+      [
+        "Reference",
+        "Date",
+        "Receiver",
+        "Amount USD",
+        "Amount ETB",
+        "Fee",
+        "Status",
+      ],
       ...filteredTransactions.map((tx) => [
         tx.referenceNumber,
         new Date(tx.createdAt).toLocaleDateString(),
@@ -157,78 +190,103 @@ export default function TransactionsPage() {
   }
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Link href="/home">
-            <Button variant="ghost" size="icon">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <AntButton
+              type="text"
+              icon={<ArrowLeft className="h-5 w-5" />}
+              className="flex items-center justify-center"
+            />
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{t("transactions.title")}</h1>
+            <h1 className="text-xl font-bold text-foreground">
+              {t("transactions.title")}
+            </h1>
             <p className="text-sm text-muted-foreground">
               {filteredTransactions.length} {t("transactions.subtitle")}
             </p>
           </div>
         </div>
-        <Button variant="outline" size="sm" className="gap-2" onClick={exportTransactions}>
-          <Download className="h-4 w-4" />
+        <AntButton
+          type="default"
+          size="small"
+          className="gap-2"
+          onClick={exportTransactions}
+          icon={<Download className="h-4 w-4" />}
+        >
           {t("transactions.export")}
-        </Button>
+        </AntButton>
       </div>
 
       {/* Stats */}
       <div className="mb-6 grid grid-cols-4 gap-3">
-        <Card className="bg-card">
-          <CardContent className="p-3 text-center">
+        <AntCard className="bg-card">
+          <div className="p-1 text-center">
             <p className="text-2xl font-bold text-foreground">{stats.total}</p>
-            <p className="text-xs text-muted-foreground">{t("transactions.total")}</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-success/10">
-          <CardContent className="p-3 text-center">
+            <p className="text-xs text-muted-foreground">
+              {t("transactions.total")}
+            </p>
+          </div>
+        </AntCard>
+        <AntCard className="bg-success/10 border-success/20">
+          <div className="p-1 text-center">
             <p className="text-2xl font-bold text-success">{stats.completed}</p>
-            <p className="text-xs text-muted-foreground">{t("transactions.completed")}</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-warning/10">
-          <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-warning-foreground">{stats.pending}</p>
-            <p className="text-xs text-muted-foreground">{t("transactions.pending")}</p>
-          </CardContent>
-        </Card>
-        <Card className="bg-primary/10">
-          <CardContent className="p-3 text-center">
-            <p className="text-2xl font-bold text-primary">{stats.processing}</p>
-            <p className="text-xs text-muted-foreground">{t("transactions.processing")}</p>
-          </CardContent>
-        </Card>
+            <p className="text-xs text-muted-foreground">
+              {t("transactions.completed")}
+            </p>
+          </div>
+        </AntCard>
+        <AntCard className="bg-warning/10 border-warning/20">
+          <div className="p-1 text-center">
+            <p className="text-2xl font-bold text-warning-foreground">
+              {stats.pending}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("transactions.pending")}
+            </p>
+          </div>
+        </AntCard>
+        <AntCard className="bg-primary/10 border-primary/20">
+          <div className="p-1 text-center">
+            <p className="text-2xl font-bold text-primary">
+              {stats.processing}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("transactions.processing")}
+            </p>
+          </div>
+        </AntCard>
       </div>
 
       {/* Search and Filters */}
       <div className="mb-6 flex gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
+          <AntInput
             placeholder={t("transactions.search")}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            className="pl-10 h-10"
           />
         </div>
-        
+
         {/* Status Filter Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="gap-2">
-              {statusFilter === "all" ? t("transactions.status.title") : statusFilter}
+              {statusFilter === "all"
+                ? t("transactions.status.title")
+                : statusFilter}
               <ChevronDown className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuLabel>{t("transactions.filterByStatus")}</DropdownMenuLabel>
+            <DropdownMenuLabel>
+              {t("transactions.filterByStatus")}
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             {statusOptions.map((option) => (
               <DropdownMenuItem
@@ -268,7 +326,9 @@ export default function TransactionsPage() {
                 <Label>{t("transactions.status.title")}</Label>
                 <select
                   value={statusFilter}
-                  onChange={(e) => setStatusFilter(e.target.value as TransactionStatus | "all")}
+                  onChange={(e) =>
+                    setStatusFilter(e.target.value as TransactionStatus | "all")
+                  }
                   className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                 >
                   {statusOptions.map((option) => (
@@ -284,7 +344,9 @@ export default function TransactionsPage() {
                 <Label>{t("transactions.dateRange")}</Label>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">{t("transactions.from")}</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      {t("transactions.from")}
+                    </Label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
@@ -296,7 +358,9 @@ export default function TransactionsPage() {
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">{t("transactions.to")}</Label>
+                    <Label className="text-xs text-muted-foreground">
+                      {t("transactions.to")}
+                    </Label>
                     <div className="relative">
                       <Calendar className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                       <Input
@@ -371,7 +435,9 @@ export default function TransactionsPage() {
       {/* Active Filters */}
       {activeFilters > 0 && (
         <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-sm text-muted-foreground">{t("transactions.activeFilters")}:</span>
+          <span className="text-sm text-muted-foreground">
+            {t("transactions.activeFilters")}:
+          </span>
           {statusFilter !== "all" && (
             <span className="flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">
               {statusFilter}
@@ -408,18 +474,32 @@ export default function TransactionsPage() {
       {/* Transactions List */}
       <div className="space-y-3">
         {filteredTransactions.length > 0 ? (
-          filteredTransactions.map((tx) => (
-            <Link key={tx.id} href={`/transactions/${tx.id}`}>
-              <TransactionCard transaction={tx} />
-            </Link>
-          ))
+          <>
+            {filteredTransactions.map((tx) => (
+              <Link key={tx.id} href={`/transactions/${tx.id}`}>
+                <TransactionCard transaction={tx} />
+              </Link>
+            ))}
+
+            <div className="mt-12 flex justify-center pb-8 text-center">
+              <AntPagination
+                defaultCurrent={1}
+                total={filteredTransactions.length > 0 ? 50 : 0}
+                pageSize={10}
+                showSizeChanger={false}
+                className="premium-pagination px-6 py-4 bg-background/60 backdrop-blur-xl border border-border/40 rounded-3xl shadow-lg inline-block"
+              />
+            </div>
+          </>
         ) : (
           <div className="flex flex-col items-center gap-4 py-12 text-center">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-muted">
               <Search className="h-8 w-8 text-muted-foreground" />
             </div>
             <div>
-              <p className="font-medium text-foreground">{t("transactions.noResults")}</p>
+              <p className="font-medium text-foreground">
+                {t("transactions.noResults")}
+              </p>
               <p className="text-sm text-muted-foreground">
                 {searchQuery || activeFilters > 0
                   ? t("transactions.noResultsFiltered")

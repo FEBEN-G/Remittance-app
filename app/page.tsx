@@ -12,14 +12,13 @@ import {
   Zap,
   CheckCircle2,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+  Button as AntButton,
+  Card as AntCard,
+  Collapse,
+  ConfigProvider,
+  theme,
+} from "antd";
 
 const services = [
   {
@@ -114,13 +113,13 @@ export default function LandingPage() {
             >
               Log in
             </Link>
-            <Button
-              asChild
-              size="lg"
-              className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all"
+            <AntButton
+              type="primary"
+              size="large"
+              className="rounded-full shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-all border-none bg-primary h-12 px-8 flex items-center justify-center"
             >
               <Link href="/login">Send Money</Link>
-            </Button>
+            </AntButton>
           </div>
         </div>
       </header>
@@ -150,24 +149,22 @@ export default function LandingPage() {
               </p>
 
               <div className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-                <Button
-                  asChild
-                  size="lg"
-                  className="h-14 rounded-full px-8 text-base shadow-xl shadow-primary/25 hover:scale-105 transition-all duration-300 w-full sm:w-auto"
+                <AntButton
+                  type="primary"
+                  size="large"
+                  className="h-14 rounded-full px-8 text-base shadow-xl shadow-primary/25 hover:scale-105 transition-all duration-300 w-full sm:w-auto border-none bg-primary flex items-center justify-center"
                 >
-                  <Link href="/login" className="gap-2">
+                  <Link href="/login" className="flex items-center gap-2">
                     Send Money Now
                     <ArrowRight className="h-5 w-5" />
                   </Link>
-                </Button>
-                <Button
-                  asChild
-                  variant="outline"
-                  size="lg"
-                  className="h-14 rounded-full px-8 text-base border-border/60 hover:bg-muted/50 backdrop-blur-md w-full sm:w-auto transition-colors"
+                </AntButton>
+                <AntButton
+                  size="large"
+                  className="h-14 rounded-full px-8 text-base border-border/60 hover:bg-muted/50 backdrop-blur-md w-full sm:w-auto transition-colors flex items-center justify-center bg-transparent border text-foreground"
                 >
                   <Link href="#services">Explore Features</Link>
-                </Button>
+                </AntButton>
               </div>
 
               <div className="mt-16 grid w-full grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 lg:max-w-6xl">
@@ -231,9 +228,12 @@ export default function LandingPage() {
                       animationFillMode: "both",
                     }}
                   >
-                    <Card className="group relative h-full overflow-hidden border-border/40 bg-background/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 rounded-3xl">
+                    <AntCard
+                      className="group relative h-full overflow-hidden border-border/40 bg-background/50 backdrop-blur-sm transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:-translate-y-2 rounded-3xl"
+                      styles={{ body: { padding: "2rem" } }}
+                    >
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                      <CardContent className="relative p-8">
+                      <div className="relative">
                         <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-all duration-500 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground group-hover:rotate-3 shadow-sm">
                           <Icon className="h-8 w-8" />
                         </div>
@@ -243,8 +243,8 @@ export default function LandingPage() {
                         <p className="text-base text-muted-foreground leading-relaxed">
                           {item.description}
                         </p>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </AntCard>
                   </div>
                 );
               })}
@@ -254,8 +254,11 @@ export default function LandingPage() {
 
         <section id="about" className="py-32 px-4 md:px-6">
           <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-8 duration-700">
-            <Card className="overflow-hidden border-border/40 bg-gradient-to-br from-background to-muted/50 rounded-[2.5rem] shadow-xl">
-              <CardContent className="grid gap-12 p-8 md:grid-cols-2 md:p-16 items-center">
+            <AntCard
+              className="overflow-hidden border-border/40 bg-linear-to-br from-background to-muted/50 rounded-[2.5rem] shadow-xl"
+              styles={{ body: { padding: "4rem" } }}
+            >
+              <div className="grid gap-12 md:grid-cols-2 items-center">
                 <div>
                   <h2 className="text-4xl font-bold tracking-tight sm:text-5xl mb-6">
                     About Us
@@ -289,23 +292,24 @@ export default function LandingPage() {
                     { value: "55K+", label: "Customers" },
                     { value: "24/7", label: "Support Team" },
                   ].map((stat, i) => (
-                    <Card
+                    <AntCard
                       key={i}
                       className="border-border/40 bg-background/40 backdrop-blur-md rounded-3xl hover:-translate-y-1 hover:shadow-lg transition-all duration-300 hover:border-primary/20"
+                      styles={{ body: { padding: "1.5rem" } }}
                     >
-                      <CardContent className="p-6 text-center">
+                      <div className="text-center">
                         <p className="text-3xl font-bold text-foreground mb-2">
                           {stat.value}
                         </p>
                         <p className="text-sm font-medium text-muted-foreground">
                           {stat.label}
                         </p>
-                      </CardContent>
-                    </Card>
+                      </div>
+                    </AntCard>
                   ))}
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </AntCard>
           </div>
         </section>
 
@@ -354,8 +358,11 @@ export default function LandingPage() {
                     animationFillMode: "both",
                   }}
                 >
-                  <Card className="group h-full border-border/40 bg-background/50 backdrop-blur-sm rounded-3xl hover:shadow-xl hover:-translate-y-2 transition-all duration-300 hover:border-primary/30">
-                    <CardContent className="flex flex-col items-center text-center p-8">
+                  <AntCard
+                    className="group h-full border-border/40 bg-background/50 backdrop-blur-sm rounded-3xl hover:shadow-xl hover:-translate-y-2 transition-all duration-300 hover:border-primary/30"
+                    styles={{ body: { padding: "2rem" } }}
+                  >
+                    <div className="flex flex-col items-center text-center">
                       <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 text-primary transition-transform duration-300 group-hover:scale-110">
                         <contact.icon className="h-8 w-8" />
                       </div>
@@ -376,8 +383,8 @@ export default function LandingPage() {
                           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                         </Link>
                       )}
-                    </CardContent>
-                  </Card>
+                    </div>
+                  </AntCard>
                 </div>
               ))}
             </div>
@@ -395,28 +402,27 @@ export default function LandingPage() {
                 support.
               </p>
 
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full text-left space-y-4"
-              >
-                {faqs.map((item, i) => (
-                  <AccordionItem
-                    key={i}
-                    value={`item-${i}`}
-                    className="border border-border/40 rounded-2xl px-6 bg-card/40 backdrop-blur-sm data-[state=open]:bg-card/80 transition-colors duration-300 hover:border-primary/30"
-                  >
-                    <AccordionTrigger className="text-lg font-medium hover:no-underline py-6 group">
-                      <span className="group-hover:text-primary transition-colors">
-                        {item.q}
-                      </span>
-                    </AccordionTrigger>
-                    <AccordionContent className="text-muted-foreground text-base pb-6 leading-relaxed">
+              <Collapse
+                accordion
+                ghost
+                expandIconPosition="end"
+                className="w-full text-left bg-transparent"
+                items={faqs.map((item, i) => ({
+                  key: i,
+                  label: (
+                    <span className="text-lg font-bold text-foreground hover:text-primary transition-colors py-2">
+                      {item.q}
+                    </span>
+                  ),
+                  children: (
+                    <p className="text-muted-foreground text-base leading-relaxed px-2">
                       {item.a}
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+                    </p>
+                  ),
+                  className:
+                    "mb-4 border border-border/40 rounded-2xl bg-card/40 backdrop-blur-sm hover:border-primary/30 transition-all overflow-hidden",
+                }))}
+              />
             </div>
           </div>
         </section>

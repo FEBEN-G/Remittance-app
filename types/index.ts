@@ -29,14 +29,19 @@ export interface Address {
 
 export type KYCLevel = 0 | 1 | 2 | 3;
 
-export type KYCStatus = 'pending' | 'approved' | 'rejected' | 'not_submitted';
+export type KYCStatus =
+  | "pending"
+  | "approved"
+  | "rejected"
+  | "not_submitted"
+  | "incomplete";
 
 export interface KYCSubmission {
   id: string;
   userId: string;
   level: KYCLevel;
   status: KYCStatus;
-  documentType: 'passport' | 'drivers_license' | 'national_id';
+  documentType: "passport" | "drivers_license" | "national_id";
   documentFrontUrl?: string;
   documentBackUrl?: string;
   selfieUrl?: string;
@@ -61,10 +66,10 @@ export interface Wallet {
 export interface WalletTransaction {
   id: string;
   walletId: string;
-  type: 'deposit' | 'withdrawal' | 'transfer' | 'refund';
+  type: "deposit" | "withdrawal" | "transfer" | "refund";
   amount: number;
   currency: string;
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   description: string;
   createdAt: string;
 }
@@ -73,7 +78,7 @@ export interface WalletTransaction {
 export interface PaymentMethod {
   id: string;
   userId: string;
-  type: 'mastercard' | 'visa' | 'bank_account';
+  type: "mastercard" | "visa" | "bank_account";
   lastFourDigits: string;
   expiryMonth?: string;
   expiryYear?: string;
@@ -84,7 +89,12 @@ export interface PaymentMethod {
 }
 
 // Transaction Types
-export type TransactionStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled';
+export type TransactionStatus =
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "cancelled";
 
 export interface Transaction {
   id: string;
@@ -157,7 +167,7 @@ export interface ExchangeRate {
   bonusRate?: number;
   effectiveRate: number;
   date: string;
-  currency: 'USD' | 'ETB';
+  currency: "USD" | "ETB";
 }
 
 export interface ExchangeRateHistory {
@@ -171,7 +181,7 @@ export interface Referral {
   referrerId: string;
   referredUserId: string;
   referredUserName: string;
-  status: 'pending' | 'active' | 'rewarded';
+  status: "pending" | "active" | "rewarded";
   rewardAmount: number;
   rewardCurrency: string;
   createdAt: string;
@@ -192,7 +202,7 @@ export interface GiftPackage {
   name: string;
   description: string;
   imageUrl: string;
-  category: 'birthday' | 'wedding' | 'holiday' | 'graduation' | 'other';
+  category: "birthday" | "wedding" | "holiday" | "graduation" | "other";
   minAmount: number;
   maxAmount: number;
   fee: number;
@@ -221,7 +231,7 @@ export interface DonationCause {
   name: string;
   description: string;
   imageUrl: string;
-  category: 'education' | 'health' | 'environment' | 'disaster' | 'community';
+  category: "education" | "health" | "environment" | "disaster" | "community";
   organizationName: string;
   targetAmount: number;
   raisedAmount: number;
@@ -251,12 +261,18 @@ export interface CrowdfundingCampaign {
   title: string;
   description: string;
   imageUrl: string;
-  category: 'medical' | 'education' | 'business' | 'emergency' | 'community' | 'personal';
+  category:
+    | "medical"
+    | "education"
+    | "business"
+    | "emergency"
+    | "community"
+    | "personal";
   targetAmount: number;
   raisedAmount: number;
   currency: string;
   contributorsCount: number;
-  status: 'active' | 'completed' | 'cancelled';
+  status: "active" | "completed" | "cancelled";
   endDate: string;
   createdAt: string;
 }
@@ -275,7 +291,15 @@ export interface CrowdfundingContribution {
 }
 
 // Notification Types
-export type NotificationType = 'transaction' | 'kyc' | 'security' | 'promotion' | 'system' | 'referral' | 'gift' | 'donation';
+export type NotificationType =
+  | "transaction"
+  | "kyc"
+  | "security"
+  | "promotion"
+  | "system"
+  | "referral"
+  | "gift"
+  | "donation";
 
 export interface Notification {
   id: string;
@@ -345,11 +369,30 @@ export interface TransactionFilters {
 }
 
 // KYC Limits with 3 tiers
-export const KYC_LIMITS: Record<KYCLevel, { perTransaction: number; monthly: number; description: string }> = {
-  0: { perTransaction: 0, monthly: 0, description: 'No transactions allowed' },
-  1: { perTransaction: 500, monthly: 1000, description: 'Basic verification - ID only' },
-  2: { perTransaction: 3000, monthly: 10000, description: 'Standard verification - ID + Selfie' },
-  3: { perTransaction: 10000, monthly: 50000, description: 'Premium verification - Full documents' },
+export const KYC_LIMITS: Record<
+  KYCLevel,
+  { perTransaction: number; monthly: number; description: string }
+> = {
+  0: {
+    perTransaction: 0,
+    monthly: 0,
+    description: "View only - no transactions",
+  },
+  1: {
+    perTransaction: 500,
+    monthly: 1000,
+    description: "Domestic basic - Up to $500/tx",
+  },
+  2: {
+    perTransaction: 3000,
+    monthly: 10000,
+    description: "International standard - Up to $3000/tx",
+  },
+  3: {
+    perTransaction: 10000,
+    monthly: 50000,
+    description: "Premium - Full limits",
+  },
 };
 
 // Partner API Types

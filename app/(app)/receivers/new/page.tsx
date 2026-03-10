@@ -14,7 +14,7 @@ import { mockBanks } from "@/lib/mock-data";
 export default function NewReceiverPage() {
   const router = useRouter();
   const { t } = useLocale();
-  
+
   const [formData, setFormData] = useState({
     fullName: "",
     bankCode: "",
@@ -76,17 +76,21 @@ export default function NewReceiverPage() {
             <Check className="h-10 w-10 text-success" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-foreground">{t("receivers.addSuccess")}</h2>
+            <h2 className="text-2xl font-bold text-foreground">
+              {t("receivers.addSuccess")}
+            </h2>
             <p className="mt-2 text-muted-foreground">
               {t("receivers.addSuccessDesc", { name: formData.fullName })}
             </p>
           </div>
           <div className="flex flex-col gap-3">
-            <Link href={`/send`}>
+            <Link href={`/send?receiver=receiver-1`}>
               <Button className="w-full">{t("receivers.sendNow")}</Button>
             </Link>
             <Link href="/receivers">
-              <Button variant="outline" className="w-full">{t("receivers.viewAll")}</Button>
+              <Button variant="outline" className="w-full">
+                {t("receivers.viewAll")}
+              </Button>
             </Link>
           </div>
         </div>
@@ -102,15 +106,21 @@ export default function NewReceiverPage() {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
-          <h1 className="text-xl font-bold text-foreground">{t("receivers.addNew")}</h1>
-          <p className="text-sm text-muted-foreground">{t("receivers.addNewDesc")}</p>
+          <h1 className="text-xl font-bold text-foreground">
+            {t("receivers.addNew")}
+          </h1>
+          <p className="text-sm text-muted-foreground">
+            {t("receivers.addNewDesc")}
+          </p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{t("receivers.personalInfo")}</CardTitle>
+            <CardTitle className="text-base">
+              {t("receivers.personalInfo")}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -152,7 +162,9 @@ export default function NewReceiverPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">{t("receivers.bankInfo")}</CardTitle>
+            <CardTitle className="text-base">
+              {t("receivers.bankInfo")}
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
@@ -178,7 +190,9 @@ export default function NewReceiverPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="accountNumber">{t("receivers.accountNumber")} *</Label>
+              <Label htmlFor="accountNumber">
+                {t("receivers.accountNumber")} *
+              </Label>
               <Input
                 id="accountNumber"
                 value={formData.accountNumber}
@@ -187,7 +201,9 @@ export default function NewReceiverPage() {
                 className={errors.accountNumber ? "border-destructive" : ""}
               />
               {errors.accountNumber && (
-                <p className="text-sm text-destructive">{errors.accountNumber}</p>
+                <p className="text-sm text-destructive">
+                  {errors.accountNumber}
+                </p>
               )}
             </div>
           </CardContent>

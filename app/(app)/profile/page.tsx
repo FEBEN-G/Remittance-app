@@ -23,27 +23,25 @@ import {
   Wallet,
   Trash2,
   TrendingUp,
+  Settings,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Switch } from "@/components/ui/switch";
+import {
+  Button as AntButton,
+  Card as AntCard,
+  Avatar as AntAvatar,
+  Switch,
+  Typography,
+  Space,
+  Modal,
+  Input as AntInput,
+  Divider,
+} from "antd";
 import { StatusBadge } from "@/components/status-badge";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+
+const { Text, Title } = Typography;
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -84,13 +82,6 @@ export default function ProfilePage() {
       href: "/profile/edit",
     },
     {
-      id: "kyc",
-      label: t("profile.verification"),
-      icon: Shield,
-      href: "/kyc",
-      badge: user?.kycStatus,
-    },
-    {
       id: "wallet",
       label: t("profile.wallet"),
       icon: Wallet,
@@ -103,16 +94,11 @@ export default function ProfilePage() {
       href: "/wallet",
     },
     {
-      id: "security",
-      label: t("profile.security"),
-      icon: Shield,
-      href: "/profile/security",
-    },
-    {
-      id: "notifications",
-      label: t("profile.notifications"),
-      icon: Bell,
-      href: "/profile/notifications",
+      id: "settings",
+      label: "Settings",
+      icon: Settings,
+      href: "/profile/settings",
+      badge: user?.kycStatus,
     },
   ];
 
@@ -169,60 +155,88 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="container mx-auto max-w-7xl px-4 py-6">
+    <div className="space-y-6">
       {/* Header */}
       <div className="mb-6 flex items-center gap-4">
         <Link href="/home">
-          <Button variant="ghost" size="icon">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
+          <AntButton
+            type="text"
+            icon={<ArrowLeft className="h-5 w-5" />}
+            className="flex items-center justify-center"
+          />
         </Link>
-        <h1 className="text-xl font-bold text-foreground">{t("profile.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {t("profile.title")}
+        </h1>
       </div>
 
       {/* Profile Card */}
-      <Card className="mb-6">
-        <CardContent className="flex items-center gap-4 p-6">
+      <AntCard className="mb-6 overflow-hidden">
+        <div className="flex items-center gap-4 p-2">
           <div className="relative">
-            <Avatar className="h-20 w-20 border-2 border-primary">
-              <AvatarImage src={user?.avatarUrl} />
-              <AvatarFallback className="bg-primary text-lg text-primary-foreground">
-                {user && getInitials(user.firstName, user.lastName)}
-              </AvatarFallback>
-            </Avatar>
+            <AntAvatar
+              size={80}
+              src={user?.avatarUrl}
+              className="border-2 border-primary"
+            >
+              {user && getInitials(user.firstName, user.lastName)}
+            </AntAvatar>
             <button className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-md">
               <Camera className="h-4 w-4" />
             </button>
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-foreground">
-              {user?.firstName} {user?.lastName}
-            </h2>
+            <div className="flex items-center gap-2">
+              <h2 className="text-xl font-bold text-foreground">
+                {user?.firstName} {user?.lastName}
+              </h2>
+              {user?.kycStatus && (
+                <StatusBadge
+                  status={
+                    user.kycStatus === "approved"
+                      ? "completed"
+                      : user.kycStatus === "pending"
+                        ? "pending"
+                        : user.kycStatus === "rejected"
+                          ? "failed"
+                          : "pending"
+                  }
+                  size="sm"
+                />
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">{user?.email}</p>
             <p className="text-sm text-muted-foreground">{user?.phoneNumber}</p>
             {user?.referralCode && (
-              <p className="mt-1 text-xs text-primary">
+              <p className="mt-1 text-xs text-primary font-medium">
                 {t("profile.referralCode")}: {user.referralCode}
               </p>
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
 
       {/* Account Settings */}
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("profile.accountSettings")}</CardTitle>
-        </CardHeader>
-        <CardContent className="divide-y divide-border p-0">
+      <AntCard
+        className="mb-6"
+        title={
+          <span className="text-base font-bold">
+            {t("profile.accountSettings")}
+          </span>
+        }
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="divide-y divide-border/40">
           {accountItems.map((item) => (
             <Link key={item.id} href={item.href}>
               <div className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-muted/50">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60">
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <span className="text-foreground">{item.label}</span>
+                  <span className="text-foreground font-medium">
+                    {item.label}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2">
                   {item.badge && (
@@ -231,28 +245,31 @@ export default function ProfilePage() {
                         item.badge === "approved"
                           ? "completed"
                           : item.badge === "pending"
-                          ? "pending"
-                          : item.badge === "rejected"
-                          ? "failed"
-                          : "pending"
+                            ? "pending"
+                            : item.badge === "rejected"
+                              ? "failed"
+                              : "pending"
                       }
                       size="sm"
                     />
                   )}
-                  <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  <ChevronRight className="h-5 w-5 text-muted-foreground/40" />
                 </div>
               </div>
             </Link>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
 
       {/* Features */}
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("profile.features")}</CardTitle>
-        </CardHeader>
-        <CardContent className="divide-y divide-border p-0">
+      <AntCard
+        className="mb-6"
+        title={
+          <span className="text-base font-bold">{t("profile.features")}</span>
+        }
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="divide-y divide-border/40">
           {featureItems.map((item) => (
             <Link key={item.id} href={item.href}>
               <div className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-muted/50">
@@ -261,37 +278,48 @@ export default function ProfilePage() {
                     <item.icon className="h-4 w-4 text-primary" />
                   </div>
                   <div>
-                    <span className="text-foreground">{item.label}</span>
+                    <span className="text-foreground font-medium">
+                      {item.label}
+                    </span>
                     {item.description && (
-                      <p className="text-xs text-muted-foreground">{item.description}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {item.description}
+                      </p>
                     )}
                   </div>
                 </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <ChevronRight className="h-5 w-5 text-muted-foreground/40" />
               </div>
             </Link>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
 
       {/* Preferences */}
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("profile.preferences")}</CardTitle>
-        </CardHeader>
-        <CardContent className="divide-y divide-border p-0">
+      <AntCard
+        className="mb-6"
+        title={
+          <span className="text-base font-bold">
+            {t("profile.preferences")}
+          </span>
+        }
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="divide-y divide-border/40">
           {/* Language */}
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60">
                 <Globe className="h-4 w-4 text-muted-foreground" />
               </div>
-              <span className="text-foreground">{t("profile.language")}</span>
+              <span className="text-foreground font-medium">
+                {t("profile.language")}
+              </span>
             </div>
             <select
               value={locale}
               onChange={(e) => setLocale(e.target.value as "en" | "am")}
-              className="rounded-md border border-input bg-background px-3 py-1 text-sm"
+              className="rounded-lg border border-input bg-background px-3 py-1.5 text-sm focus:ring-2 focus:ring-primary/20 transition-all outline-none"
             >
               <option value="en">English</option>
               <option value="am">Amharic</option>
@@ -301,119 +329,140 @@ export default function ProfilePage() {
           {/* Dark Mode */}
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60">
                 {isDarkMode ? (
                   <Moon className="h-4 w-4 text-muted-foreground" />
                 ) : (
                   <Sun className="h-4 w-4 text-muted-foreground" />
                 )}
               </div>
-              <span className="text-foreground">{t("profile.darkMode")}</span>
+              <span className="text-foreground font-medium">
+                {t("profile.darkMode")}
+              </span>
             </div>
-            <Switch checked={isDarkMode} onCheckedChange={toggleDarkMode} />
+            <Switch checked={isDarkMode} onChange={toggleDarkMode} />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
 
       {/* Support */}
-      <Card className="mb-6">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("profile.support")}</CardTitle>
-        </CardHeader>
-        <CardContent className="divide-y divide-border p-0">
+      <AntCard
+        className="mb-6"
+        title={
+          <span className="text-base font-bold">{t("profile.support")}</span>
+        }
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="divide-y divide-border/40">
           {supportItems.map((item) => (
             <Link key={item.id} href={item.href}>
               <div className="flex items-center justify-between px-6 py-4 transition-colors hover:bg-muted/50">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60">
                     <item.icon className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <span className="text-foreground">{item.label}</span>
+                  <span className="text-foreground font-medium">
+                    {item.label}
+                  </span>
                 </div>
-                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                <ChevronRight className="h-5 w-5 text-muted-foreground/40" />
               </div>
             </Link>
           ))}
-        </CardContent>
-      </Card>
+        </div>
+      </AntCard>
 
       {/* Logout */}
-      <Button
-        variant="outline"
-        className="mb-4 w-full gap-2 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+      <AntButton
+        block
+        size="large"
+        variant="outlined"
+        danger
+        className="mb-4 flex items-center justify-center gap-2 h-12 rounded-xl font-bold border-2"
         onClick={() => setShowLogout(true)}
       >
-        <LogOut className="h-4 w-4" />
+        <LogOut className="h-5 w-5" />
         {t("profile.logout")}
-      </Button>
+      </AntButton>
 
       {/* Delete Account */}
-      <Button
-        variant="ghost"
-        className="w-full gap-2 text-destructive hover:bg-destructive/10"
+      <AntButton
+        block
+        type="text"
+        danger
+        className="flex items-center justify-center gap-2 h-12 rounded-xl font-medium"
         onClick={() => setShowDeleteAccount(true)}
       >
-        <Trash2 className="h-4 w-4" />
+        <Trash2 className="h-5 w-5" />
         {t("profile.deleteAccount")}
-      </Button>
+      </AntButton>
 
       {/* App Version */}
-      <p className="mt-6 text-center text-xs text-muted-foreground">
-        White Label Pay v1.0.0
+      <Divider />
+      <p className="text-center text-xs text-muted-foreground pb-8">
+        RemitPay v1.0.0
       </p>
 
       {/* Logout Confirmation */}
-      <AlertDialog open={showLogout} onOpenChange={setShowLogout}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("profile.logoutTitle")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("profile.logoutDescription")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{t("common.cancel")}</AlertDialogCancel>
-            <AlertDialogAction onClick={handleLogout}>
-              {t("profile.logout")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <Modal
+        title={t("profile.logoutTitle")}
+        open={showLogout}
+        onOk={handleLogout}
+        onCancel={() => setShowLogout(false)}
+        okText={t("profile.logout")}
+        cancelText={t("common.cancel")}
+        okButtonProps={{
+          danger: true,
+          size: "large",
+          className: "h-10 rounded-lg px-6",
+        }}
+        cancelButtonProps={{ size: "large", className: "h-10 rounded-lg px-6" }}
+      >
+        <p className="py-4 text-muted-foreground">
+          {t("profile.logoutDescription")}
+        </p>
+      </Modal>
 
       {/* Delete Account Confirmation */}
-      <AlertDialog open={showDeleteAccount} onOpenChange={setShowDeleteAccount}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="text-destructive">
-              {t("profile.deleteAccountTitle")}
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("profile.deleteAccountDescription")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="my-4 space-y-2">
-            <Label htmlFor="delete-confirm">{t("profile.typeToConfirm")}</Label>
-            <Input
-              id="delete-confirm"
+      <Modal
+        title={
+          <span className="text-destructive font-bold">
+            {t("profile.deleteAccountTitle")}
+          </span>
+        }
+        open={showDeleteAccount}
+        onOk={handleDeleteAccount}
+        onCancel={() => {
+          setShowDeleteAccount(false);
+          setDeleteConfirmation("");
+        }}
+        okText={t("profile.deleteAccount")}
+        cancelText={t("common.cancel")}
+        okButtonProps={{
+          danger: true,
+          disabled: deleteConfirmation !== "DELETE",
+          size: "large",
+          className: "h-10 rounded-lg px-6",
+        }}
+        cancelButtonProps={{ size: "large", className: "h-10 rounded-lg px-6" }}
+      >
+        <div className="py-4 space-y-4">
+          <p className="text-muted-foreground font-medium">
+            {t("profile.deleteAccountDescription")}
+          </p>
+          <div className="space-y-2">
+            <span className="text-sm font-medium">
+              {t("profile.typeToConfirm")}
+            </span>
+            <AntInput
               placeholder="DELETE"
               value={deleteConfirmation}
               onChange={(e) => setDeleteConfirmation(e.target.value)}
+              className="h-12 rounded-xl border-destructive/20 focus:border-destructive"
             />
           </div>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setDeleteConfirmation("")}>
-              {t("common.cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDeleteAccount}
-              disabled={deleteConfirmation !== "DELETE"}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {t("profile.deleteAccount")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        </div>
+      </Modal>
     </div>
   );
 }

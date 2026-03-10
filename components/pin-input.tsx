@@ -1,9 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, type KeyboardEvent, type ClipboardEvent } from 'react';
-import { cn } from '@/lib/utils';
-import { Eye, EyeOff } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import {
+  useState,
+  useRef,
+  useEffect,
+  type KeyboardEvent,
+  type ClipboardEvent,
+} from "react";
+import { cn } from "@/lib/utils";
+import { Eye, EyeOff } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface PinInputProps {
   length?: number;
@@ -18,7 +24,7 @@ interface PinInputProps {
 
 export function PinInput({
   length = 6,
-  value = '',
+  value = "",
   onChange,
   onComplete,
   error,
@@ -26,7 +32,7 @@ export function PinInput({
   autoFocus = true,
   className,
 }: PinInputProps) {
-  const [pin, setPin] = useState<string[]>(value.split('').slice(0, length));
+  const [pin, setPin] = useState<string[]>(value.split("").slice(0, length));
   const [showPin, setShowPin] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -38,21 +44,21 @@ export function PinInput({
   }, [autoFocus]);
 
   useEffect(() => {
-    const newPin = value.split('').slice(0, length);
+    const newPin = value.split("").slice(0, length);
     setPin(newPin);
   }, [value, length]);
 
   const handleChange = (index: number, inputValue: string) => {
     if (disabled) return;
 
-    const digit = inputValue.replace(/\D/g, '').slice(-1);
+    const digit = inputValue.replace(/\D/g, "").slice(-1);
     const newPin = [...pin];
 
     if (digit) {
       newPin[index] = digit;
       setPin(newPin);
 
-      const fullValue = newPin.join('');
+      const fullValue = newPin.join("");
       onChange?.(fullValue);
 
       if (index < length - 1) {
@@ -69,25 +75,25 @@ export function PinInput({
   const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (disabled) return;
 
-    if (e.key === 'Backspace') {
+    if (e.key === "Backspace") {
       e.preventDefault();
       const newPin = [...pin];
 
       if (pin[index]) {
-        newPin[index] = '';
+        newPin[index] = "";
         setPin(newPin);
-        onChange?.(newPin.join(''));
+        onChange?.(newPin.join(""));
       } else if (index > 0) {
-        newPin[index - 1] = '';
+        newPin[index - 1] = "";
         setPin(newPin);
-        onChange?.(newPin.join(''));
+        onChange?.(newPin.join(""));
         inputRefs.current[index - 1]?.focus();
         setFocusedIndex(index - 1);
       }
-    } else if (e.key === 'ArrowLeft' && index > 0) {
+    } else if (e.key === "ArrowLeft" && index > 0) {
       inputRefs.current[index - 1]?.focus();
       setFocusedIndex(index - 1);
-    } else if (e.key === 'ArrowRight' && index < length - 1) {
+    } else if (e.key === "ArrowRight" && index < length - 1) {
       inputRefs.current[index + 1]?.focus();
       setFocusedIndex(index + 1);
     }
@@ -97,15 +103,18 @@ export function PinInput({
     e.preventDefault();
     if (disabled) return;
 
-    const pastedData = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, length);
-    const newPin = pastedData.split('');
-    
+    const pastedData = e.clipboardData
+      .getData("text")
+      .replace(/\D/g, "")
+      .slice(0, length);
+    const newPin = pastedData.split("");
+
     while (newPin.length < length) {
-      newPin.push('');
+      newPin.push("");
     }
 
     setPin(newPin);
-    const fullValue = newPin.join('');
+    const fullValue = newPin.join("");
     onChange?.(fullValue);
 
     const nextEmptyIndex = newPin.findIndex((digit) => !digit);
@@ -119,7 +128,7 @@ export function PinInput({
   };
 
   return (
-    <div className={cn('space-y-3', className)}>
+    <div className={cn("space-y-3", className)}>
       <div className="flex items-center gap-3">
         <div className="flex gap-2">
           {Array.from({ length }).map((_, index) => (
@@ -128,24 +137,26 @@ export function PinInput({
               ref={(el) => {
                 inputRefs.current[index] = el;
               }}
-              type={showPin ? 'text' : 'password'}
+              type={showPin ? "text" : "password"}
               inputMode="numeric"
               maxLength={1}
-              value={pin[index] || ''}
+              value={pin[index] || ""}
               onChange={(e) => handleChange(index, e.target.value)}
               onKeyDown={(e) => handleKeyDown(index, e)}
               onPaste={handlePaste}
               onFocus={() => setFocusedIndex(index)}
               disabled={disabled}
               className={cn(
-                'h-14 w-12 rounded-lg border-2 text-center text-xl font-semibold transition-all',
-                'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20',
-                'disabled:cursor-not-allowed disabled:opacity-50',
+                "h-16 w-14 rounded-2xl border-2 text-center text-2xl font-black transition-all duration-300",
+                "focus:outline-none focus:ring-4 focus:ring-primary/10 focus:-translate-y-1",
+                "disabled:cursor-not-allowed disabled:opacity-50",
                 error
-                  ? 'border-destructive bg-destructive/5'
+                  ? "border-destructive bg-destructive/2 shadow-[0_0_15px_rgba(239,68,68,0.1)]"
                   : focusedIndex === index
-                  ? 'border-primary bg-primary/5'
-                  : 'border-border bg-background',
+                    ? "border-primary bg-primary/2 shadow-[0_0_20px_rgba(var(--primary),0.1)] scale-105"
+                    : pin[index]
+                      ? "border-primary/40 bg-primary/1"
+                      : "border-border/60 bg-background/50 backdrop-blur-sm",
               )}
               aria-label={`PIN digit ${index + 1}`}
             />
@@ -158,8 +169,12 @@ export function PinInput({
           onClick={() => setShowPin(!showPin)}
           className="shrink-0"
         >
-          {showPin ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-          <span className="sr-only">{showPin ? 'Hide PIN' : 'Show PIN'}</span>
+          {showPin ? (
+            <EyeOff className="h-5 w-5" />
+          ) : (
+            <Eye className="h-5 w-5" />
+          )}
+          <span className="sr-only">{showPin ? "Hide PIN" : "Show PIN"}</span>
         </Button>
       </div>
       {error && <p className="text-sm text-destructive">{error}</p>}

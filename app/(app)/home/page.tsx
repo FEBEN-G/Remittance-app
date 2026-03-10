@@ -1,8 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card as AntCard, Statistic } from "antd";
+import {
+  Button as AntButton,
+  Card as AntCard,
+  Avatar as AntAvatar,
+  Statistic,
+  Space,
+  Row,
+  Col,
+} from "antd";
 import {
   ArrowUpRight,
   Plus,
@@ -16,17 +24,10 @@ import {
   Wallet,
   TrendingUp,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TransactionCard } from "@/components/transaction-card";
 import { useAuth, useExchangeRate } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import {
-  mockTransactions,
-  mockReceivers,
-  mockExchangeRate,
-} from "@/lib/mock-data";
+import { mockTransactions, mockReceivers } from "@/lib/mock-data";
 import type { Transaction, Receiver } from "@/types";
 
 export default function HomePage() {
@@ -37,18 +38,10 @@ export default function HomePage() {
   const [receivers, setReceivers] = useState<Receiver[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isFirstLogin, setIsFirstLogin] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       setIsLoading(true);
-      // Check if this is the first time the user has logged in
-      const hasLogged = localStorage.getItem("has_logged_in");
-      setIsFirstLogin(!hasLogged);
-      if (!hasLogged) {
-        localStorage.setItem("has_logged_in", "true");
-      }
-
       await new Promise((resolve) => setTimeout(resolve, 500));
       setTransactions(mockTransactions.slice(0, 3));
       setReceivers(mockReceivers.slice(0, 4));
@@ -81,316 +74,377 @@ export default function HomePage() {
     );
   }
 
-  const rate = currentRate || mockExchangeRate;
+  const rate = currentRate;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
-      <div className="container mx-auto max-w-7xl space-y-6 px-4 py-6 md:px-6 lg:px-8">
-        {/* Dynamic Top Section: Welcome Card for first time, Exchange Rate (Ant Design) for returning */}
-        {isFirstLogin ? (
-          <div className="flex items-center justify-between rounded-2xl bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-4 md:p-6">
-            <div className="space-y-1">
-              <span className="text-sm font-medium text-primary">
-                {t("home.welcomeBack")}
-              </span>
-              <h1 className="text-2xl font-bold text-foreground md:text-3xl">
-                {user?.firstName} {user?.lastName}
+    <div className="min-h-screen bg-linear-to-b from-background to-muted/20 pb-12">
+      <div className="space-y-8 py-8">
+        {/* Header & Exchange Rate */}
+        <div className="space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 px-2">
+            <div>
+              <h1 className="text-3xl font-black text-foreground md:text-4xl tracking-tight">
+                {t("home.welcomeBack")}, {user?.firstName}!
               </h1>
-              <p className="text-sm text-muted-foreground md:text-base">
+              <p className="text-muted-foreground font-medium">
                 {t("home.subtitle")}
               </p>
             </div>
-            <Avatar className="h-14 w-14 border-4 border-background shadow-lg ring-2 ring-primary/20 md:h-16 md:w-16">
-              <AvatarImage src={user?.avatarUrl} alt={user?.firstName} />
-              <AvatarFallback className="bg-gradient-to-br from-primary to-secondary text-lg font-bold text-primary-foreground">
-                {getInitials(
-                  user ? `${user.firstName} ${user.lastName}` : "User",
-                )}
-              </AvatarFallback>
-            </Avatar>
           </div>
-        ) : (
+
           <AntCard
-            title={
-              <div className="flex items-center gap-2">
-                <TrendingUp className="h-5 w-5 text-primary" />
-                <span className="text-lg font-semibold">
-                  {t("home.exchangeRates")}
-                </span>
-              </div>
-            }
-            extra={
-              <div className="flex items-center gap-2">
-                <Link href="/rates">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="gap-1.5 text-xs h-8"
-                  >
-                    {t("home.viewHistory")}
-                    <ChevronRight className="h-3.5 w-3.5" />
-                  </Button>
-                </Link>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={handleRefreshRate}
-                  disabled={isRefreshing}
-                >
-                  <RefreshCw
-                    className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
-                  />
-                </Button>
-              </div>
-            }
-            className="shadow-sm rounded-2xl border border-border bg-card overflow-hidden"
+            className="shadow-md rounded-4xl border-border bg-background/95 backdrop-blur-sm overflow-hidden group"
             styles={{
               header: {
-                borderBottom: "1px solid rgba(0,0,0,0.05)",
-                background: "transparent",
+                borderBottom: "1px solid rgba(var(--border), 0.1)",
+                padding: "1.5rem 2rem",
               },
-              body: { padding: "20px 24px", background: "transparent" },
+              body: { padding: "2rem", background: "transparent" },
             }}
-          >
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <p className="text-sm text-muted-foreground mb-1">
-                  {"Today's Rate"}
-                </p>
-                <Statistic
-                  valueStyle={{
-                    color: "oklch(0.55 0.18 260)",
-                    fontWeight: "bold",
-                    fontSize: "1.75rem",
-                  }}
-                  value={rate.effectiveRate.toFixed(2)}
-                  suffix="ETB"
-                  prefix="1 USD ="
+            title={
+              <Space className="group">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 transition-transform group-hover:scale-110">
+                  <TrendingUp className="h-5 w-5 text-primary" />
+                </div>
+                <span className="text-xl font-black tracking-tight text-foreground">
+                  {t("home.exchangeRates")}
+                </span>
+              </Space>
+            }
+            extra={
+              <Space>
+                <Link href="/rates">
+                  <AntButton
+                    type="default"
+                    className="h-10 rounded-xl border-border/40 hover:border-primary/50 text-xs font-bold uppercase tracking-wider"
+                  >
+                    {t("home.viewHistory")}
+                    <ChevronRight className="h-4 w-4 ml-1" />
+                  </AntButton>
+                </Link>
+                <AntButton
+                  type="text"
+                  icon={
+                    <RefreshCw
+                      className={`h-5 w-5 text-muted-foreground ${isRefreshing ? "animate-spin text-primary" : ""}`}
+                    />
+                  }
+                  className="h-10 w-10 rounded-xl hover:bg-muted"
+                  onClick={handleRefreshRate}
+                  disabled={isRefreshing}
                 />
+              </Space>
+            }
+          >
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+              <div className="space-y-1">
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-muted-foreground/60">
+                  {"Today's Live Rate"}
+                </p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-sm font-bold text-muted-foreground">
+                    1 USD =
+                  </span>
+                  {rate && (
+                    <Statistic
+                      value={rate.effectiveRate}
+                      precision={2}
+                      suffix="ETB"
+                      valueStyle={{
+                        color: "var(--primary)",
+                        fontWeight: "900",
+                        fontSize: "3rem",
+                        letterSpacing: "-0.05em",
+                        lineHeight: "1",
+                      }}
+                    />
+                  )}
+                </div>
               </div>
-              {rate.bonusRate && rate.bonusRate > 0 && (
-                <div className="flex items-center gap-2 font-medium bg-green-500/10 text-green-600 px-4 py-2 rounded-full border border-green-500/20">
-                  <TrendingUp className="h-4 w-4" />
-                  <span>+{rate.bonusRate.toFixed(2)} Bonus Active!</span>
+              {rate && rate.bonusRate && rate.bonusRate > 0 && (
+                <div className="flex items-center gap-3 font-black bg-emerald-500/10 text-emerald-600 px-6 py-3 rounded-2xl border border-emerald-500/20 shadow-lg shadow-emerald-500/5 animate-in slide-in-from-right-4 duration-500">
+                  <div className="relative">
+                    <TrendingUp className="h-5 w-5" />
+                    <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                  </div>
+                  <span className="uppercase text-xs tracking-widest">
+                    +{rate.bonusRate.toFixed(2)} Bonus Rate Applied
+                  </span>
                 </div>
               )}
             </div>
           </AntCard>
-        )}
+        </div>
 
-        {/* KYC Alert */}
-        {user?.kycStatus !== "approved" && (
-          <Card className="border-2 border-warning/30 bg-gradient-to-r from-warning/10 to-warning/5 shadow-sm">
-            <CardContent className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center md:p-5">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-warning/20">
-                <AlertCircle className="h-6 w-6 text-warning-foreground" />
-              </div>
-              <div className="flex-1 space-y-1">
-                <p className="font-semibold text-foreground">
-                  {t("home.kycRequired")}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                  {t("home.kycDescription")}
-                </p>
-              </div>
-              <Link href="/kyc">
-                <Button className="w-full sm:w-auto">
-                  {t("home.completeKyc")}
-                </Button>
-              </Link>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Quick Actions */}
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:gap-4 pt-2 md:pt-4">
-          <Link href="/send" className="block">
-            <Card className="group h-full cursor-pointer border-2 border-transparent bg-gradient-to-br from-card to-card transition-all duration-300 hover:border-primary hover:shadow-lg hover:shadow-primary/10">
-              <CardContent className="flex flex-col items-center gap-3 p-5 md:p-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/25 transition-transform group-hover:scale-110">
-                  <ArrowUpRight className="h-7 w-7 text-primary-foreground" />
+        {/* Quick Actions Grid */}
+        <div className="mt-20 grid grid-cols-2 gap-4 sm:grid-cols-4 md:gap-6">
+          <Link href="/send" className="group">
+            <AntCard
+              hoverable
+              className="h-full rounded-4xl border-border/40 bg-background/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20"
+              styles={{ body: { padding: "2rem" } }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-primary to-primary/80 shadow-xl shadow-primary/30 group-hover:scale-110 transition-transform duration-500">
+                  <ArrowUpRight className="h-8 w-8 text-primary-foreground" />
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-black uppercase tracking-widest text-foreground/80">
                   {t("home.sendMoney")}
                 </span>
-              </CardContent>
-            </Card>
+              </div>
+            </AntCard>
           </Link>
-          <Link href="/wallet" className="block">
-            <Card className="group h-full cursor-pointer border-2 border-transparent transition-all duration-300 hover:border-secondary hover:shadow-lg hover:shadow-secondary/10">
-              <CardContent className="flex flex-col items-center gap-3 p-5 md:p-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-secondary to-secondary/80 shadow-lg shadow-secondary/25 transition-transform group-hover:scale-110">
-                  <Wallet className="h-7 w-7 text-secondary-foreground" />
+          <Link href="/wallet" className="group">
+            <AntCard
+              hoverable
+              className="h-full rounded-4xl border-border/40 bg-background/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-secondary/20"
+              styles={{ body: { padding: "2rem" } }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-secondary to-secondary/80 shadow-xl shadow-secondary/30 group-hover:scale-110 transition-transform duration-500">
+                  <Wallet className="h-8 w-8 text-secondary-foreground" />
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-black uppercase tracking-widest text-foreground/80">
                   {t("home.wallet")}
                 </span>
-              </CardContent>
-            </Card>
+              </div>
+            </AntCard>
           </Link>
-          <Link href="/gifts" className="block">
-            <Card className="group h-full cursor-pointer border-2 border-transparent transition-all duration-300 hover:border-pink-500 hover:shadow-lg hover:shadow-pink-500/10">
-              <CardContent className="flex flex-col items-center gap-3 p-5 md:p-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 shadow-lg shadow-pink-500/25 transition-transform group-hover:scale-110">
-                  <Gift className="h-7 w-7 text-white" />
+          <Link href="/gifts" className="group">
+            <AntCard
+              hoverable
+              className="h-full rounded-4xl border-border/40 bg-background/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-pink-500/20"
+              styles={{ body: { padding: "2rem" } }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-pink-500 to-pink-600 shadow-xl shadow-pink-500/30 group-hover:scale-110 transition-transform duration-500">
+                  <Gift className="h-8 w-8 text-white" />
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-black uppercase tracking-widest text-foreground/80">
                   {t("home.gifts")}
                 </span>
-              </CardContent>
-            </Card>
+              </div>
+            </AntCard>
           </Link>
-          <Link href="/transactions" className="block">
-            <Card className="group h-full cursor-pointer border-2 border-transparent transition-all duration-300 hover:border-accent hover:shadow-lg">
-              <CardContent className="flex flex-col items-center gap-3 p-5 md:p-6">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-muted to-muted/80 shadow-lg transition-transform group-hover:scale-110">
-                  <History className="h-7 w-7 text-muted-foreground" />
+          <Link href="/transactions" className="group">
+            <AntCard
+              hoverable
+              className="h-full rounded-4xl border-border/40 bg-background/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl hover:shadow-muted/30"
+              styles={{ body: { padding: "2rem" } }}
+            >
+              <div className="flex flex-col items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-muted to-muted/80 shadow-xl group-hover:scale-110 transition-transform duration-500">
+                  <History className="h-8 w-8 text-muted-foreground" />
                 </div>
-                <span className="text-sm font-semibold text-foreground">
+                <span className="text-sm font-black uppercase tracking-widest text-foreground/80">
                   {t("home.history")}
                 </span>
-              </CardContent>
-            </Card>
+              </div>
+            </AntCard>
           </Link>
         </div>
 
-        {/* More Features */}
-        <div className="grid grid-cols-3 gap-3 md:gap-4">
-          <Link href="/referrals" className="block">
-            <Card className="group h-full cursor-pointer border border-transparent transition-all duration-300 hover:border-blue-500/50 hover:shadow-md">
-              <CardContent className="flex flex-col items-center gap-2 p-4 md:gap-3 md:p-5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 transition-all group-hover:bg-blue-500/20 group-hover:scale-110 md:h-12 md:w-12">
-                  <Users className="h-5 w-5 text-blue-500 md:h-6 md:w-6" />
-                </div>
-                <span className="text-xs font-medium text-foreground md:text-sm">
-                  {t("home.referrals")}
-                </span>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/donate" className="block">
-            <Card className="group h-full cursor-pointer border border-transparent transition-all duration-300 hover:border-red-500/50 hover:shadow-md">
-              <CardContent className="flex flex-col items-center gap-2 p-4 md:gap-3 md:p-5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-red-500/10 transition-all group-hover:bg-red-500/20 group-hover:scale-110 md:h-12 md:w-12">
-                  <Heart className="h-5 w-5 text-red-500 md:h-6 md:w-6" />
-                </div>
-                <span className="text-xs font-medium text-foreground md:text-sm">
-                  {t("home.donate")}
-                </span>
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/crowdfunding" className="block">
-            <Card className="group h-full cursor-pointer border border-transparent transition-all duration-300 hover:border-purple-500/50 hover:shadow-md">
-              <CardContent className="flex flex-col items-center gap-2 p-4 md:gap-3 md:p-5">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 transition-all group-hover:bg-purple-500/20 group-hover:scale-110 md:h-12 md:w-12">
-                  <TrendingUp className="h-5 w-5 text-purple-500 md:h-6 md:w-6" />
-                </div>
-                <span className="text-xs font-medium text-foreground md:text-sm">
-                  {t("home.crowdfunding")}
-                </span>
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-
-        {/* Recent Receivers */}
-        {receivers.length > 0 && (
-          <Card className="border-0 shadow-lg">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg md:text-xl">
+        {/* Dual Column Layout for Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Recent Receivers (Ant Design) */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-2xl font-black tracking-tight text-foreground">
                 {t("home.recentReceivers")}
-              </CardTitle>
+              </h2>
               <Link href="/receivers">
-                <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
+                <AntButton
+                  type="link"
+                  className="font-bold uppercase tracking-widest text-xs h-8"
+                >
                   {t("common.viewAll")}
-                  <ChevronRight className="h-3.5 w-3.5" />
-                </Button>
+                  <ChevronRight className="h-4 w-4 ml-1" />
+                </AntButton>
               </Link>
-            </CardHeader>
-            <CardContent className="pb-6">
-              <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-thin md:gap-6">
+            </div>
+
+            <AntCard
+              className="border-border/40 bg-background/40 backdrop-blur-xl rounded-[2.5rem] shadow-xl overflow-hidden"
+              styles={{ body: { padding: "2rem" } }}
+            >
+              <div className="flex gap-8 overflow-x-auto pb-4 scrollbar-hide">
+                <Link
+                  href="/receivers/new"
+                  className="group shrink-0 text-center space-y-3"
+                >
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full border-2 border-dashed border-primary/30 bg-primary/5 transition-all group-hover:border-primary group-hover:bg-primary/10 shadow-inner group-hover:scale-110 duration-500">
+                    <Plus className="h-8 w-8 text-primary/60 group-hover:text-primary transition-colors" />
+                  </div>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-muted-foreground group-hover:text-primary">
+                    {t("common.addNew")}
+                  </p>
+                </Link>
                 {receivers.map((receiver) => (
                   <Link
                     key={receiver.id}
                     href={`/send?receiver=${receiver.id}`}
-                    className="group flex flex-col items-center gap-2"
+                    className="group shrink-0 text-center space-y-3"
                   >
-                    <Avatar className="h-14 w-14 border-2 border-border shadow-sm transition-all group-hover:border-primary group-hover:shadow-md md:h-16 md:w-16">
-                      <AvatarFallback className="bg-gradient-to-br from-muted to-muted/60 text-muted-foreground">
+                    <div className="relative">
+                      <AntAvatar
+                        size={64}
+                        className="border-2 border-border/40 bg-background shadow-md transition-all group-hover:border-primary group-hover:shadow-primary/20 group-hover:scale-110 duration-500"
+                      >
                         {getInitials(receiver.fullName)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <span className="w-16 truncate text-center text-xs text-muted-foreground group-hover:text-foreground md:w-20">
+                      </AntAvatar>
+                      <div className="absolute -bottom-1 -right-1 h-5 w-5 rounded-lg bg-background border border-border/40 flex items-center justify-center shadow-lg">
+                        <ArrowUpRight className="h-3 w-3 text-primary" />
+                      </div>
+                    </div>
+                    <p className="max-w-[72px] truncate text-xs font-bold text-muted-foreground group-hover:text-foreground">
                       {receiver.fullName.split(" ")[0]}
-                    </span>
+                    </p>
                   </Link>
                 ))}
-                <Link
-                  href="/receivers/new"
-                  className="group flex flex-col items-center gap-2"
-                >
-                  <div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-dashed border-border bg-muted/30 transition-all group-hover:border-primary group-hover:bg-primary/5 md:h-16 md:w-16">
-                    <Plus className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-primary" />
-                  </div>
-                  <span className="w-16 truncate text-center text-xs text-muted-foreground group-hover:text-foreground md:w-20">
-                    {t("common.addNew")}
-                  </span>
-                </Link>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            </AntCard>
+          </div>
 
-        {/* Recent Transactions */}
-        <Card className="border-0 shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-lg md:text-xl">
-              {t("home.recentTransactions")}
-            </CardTitle>
-            <Link href="/transactions">
-              <Button variant="ghost" size="sm" className="gap-1.5 text-xs">
-                {t("common.viewAll")}
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Button>
-            </Link>
-          </CardHeader>
-          <CardContent className="space-y-3 pb-6">
-            {transactions.length > 0 ? (
-              transactions.map((tx) => (
-                <Link
-                  key={tx.id}
-                  href={`/transactions/${tx.id}`}
-                  className="block"
+          {/* Featured Sections / More Features */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-2xl font-black tracking-tight text-foreground">
+                Features
+              </h2>
+            </div>
+            <div className="space-y-4">
+              <Link href="/referrals" className="block group">
+                <AntCard
+                  hoverable
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-blue-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  styles={{ body: { padding: "1.25rem" } }}
                 >
-                  <div className="rounded-xl p-1 transition-colors hover:bg-muted/50">
-                    <TransactionCard transaction={tx} />
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-500 group-hover:scale-110 transition-transform">
+                      <Users className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-black text-foreground uppercase tracking-wider text-xs">
+                        {t("home.referrals")}
+                      </p>
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Earn $5 per friend
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground/40 group-hover:text-blue-500" />
                   </div>
-                </Link>
-              ))
+                </AntCard>
+              </Link>
+              <Link href="/donate" className="block group">
+                <AntCard
+                  hoverable
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-rose-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  styles={{ body: { padding: "1.25rem" } }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-500 group-hover:scale-110 transition-transform">
+                      <Heart className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-black text-foreground uppercase tracking-wider text-xs">
+                        {t("home.donate")}
+                      </p>
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Support causes back home
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground/40 group-hover:text-rose-500" />
+                  </div>
+                </AntCard>
+              </Link>
+              <Link href="/crowdfunding" className="block group">
+                <AntCard
+                  hoverable
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-purple-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  styles={{ body: { padding: "1.25rem" } }}
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/20 text-purple-500 group-hover:scale-110 transition-transform">
+                      <TrendingUp className="h-6 w-6" />
+                    </div>
+                    <div>
+                      <p className="font-black text-foreground uppercase tracking-wider text-xs">
+                        {t("home.crowdfunding")}
+                      </p>
+                      <p className="text-xs font-medium text-muted-foreground">
+                        Invest in local projects
+                      </p>
+                    </div>
+                    <ChevronRight className="h-4 w-4 ml-auto text-muted-foreground/40 group-hover:text-purple-500" />
+                  </div>
+                </AntCard>
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Transactions (Ant Design Full Section) */}
+        <div className="space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h2 className="text-2xl font-black tracking-tight text-foreground">
+              {t("home.recentTransactions")}
+            </h2>
+            <Link href="/transactions">
+              <AntButton
+                type="link"
+                className="font-bold uppercase tracking-widest text-xs h-8"
+              >
+                {t("common.viewAll")}
+                <ChevronRight className="h-4 w-4 ml-1" />
+              </AntButton>
+            </Link>
+          </div>
+
+          <AntCard
+            className="border-border/40 bg-background/40 backdrop-blur-xl rounded-[2.5rem] shadow-2xl overflow-hidden"
+            styles={{ body: { padding: "1.5rem" } }}
+          >
+            {transactions.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {transactions.map((tx) => (
+                  <Link
+                    key={tx.id}
+                    href={`/transactions/${tx.id}`}
+                    className="block hover:-translate-y-1 transition-transform"
+                  >
+                    <TransactionCard
+                      transaction={tx}
+                      className="border-none bg-transparent hover:bg-muted/30 shadow-none"
+                    />
+                  </Link>
+                ))}
+              </div>
             ) : (
-              <div className="flex flex-col items-center gap-4 py-12 text-center">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
-                  <History className="h-8 w-8 text-muted-foreground/50" />
+              <div className="flex flex-col items-center gap-6 py-16 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-muted/40 shadow-inner">
+                  <History className="h-10 w-10 text-muted-foreground/30" />
                 </div>
-                <div className="space-y-1">
-                  <p className="font-medium text-foreground">
+                <div className="space-y-2 max-w-xs">
+                  <p className="text-xl font-black text-foreground tracking-tight">
                     {t("home.noTransactions")}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm font-medium text-muted-foreground leading-relaxed">
                     {t("home.startSending")}
                   </p>
                 </div>
-                <Link href="/send">
-                  <Button className="mt-2">
+                <Link href="/send" className="pt-2">
+                  <AntButton
+                    type="primary"
+                    size="large"
+                    className="h-14 px-10 rounded-2xl font-black uppercase tracking-widest text-xs shadow-xl shadow-primary/20"
+                  >
                     {t("home.sendFirstTransaction")}
-                  </Button>
+                  </AntButton>
                 </Link>
               </div>
             )}
-          </CardContent>
-        </Card>
+          </AntCard>
+        </div>
       </div>
     </div>
   );
