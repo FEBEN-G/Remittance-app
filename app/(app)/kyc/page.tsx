@@ -35,7 +35,7 @@ import {
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
 import { toast } from "sonner";
-import { KYCIncompleteMock } from "@/components/kyc-incomplete-mock";
+import { KYCResumeCard } from "@/components/kyc-resume-card";
 
 const { Title: AntTitle, Text: AntText, Paragraph: AntParagraph } = Typography;
 
@@ -261,7 +261,7 @@ export default function KYCPage() {
       )}
 
       {user?.kycStatus === "incomplete" ? (
-        <KYCIncompleteMock onResume={() => setStep("level_selection")} />
+        <KYCResumeCard onResume={() => setStep("level_selection")} />
       ) : (
         (user?.kycStatus === "not_submitted" ||
           user?.kycStatus === "rejected") && (

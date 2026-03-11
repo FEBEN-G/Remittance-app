@@ -15,7 +15,7 @@ import {
 } from "antd";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/store";
-import { mockExchangeRate, mockUser } from "@/lib/mock-data";
+import { mockExchangeRate, mockUser } from "@/lib/mock";
 
 export default function LoginPage() {
   const router = useRouter();

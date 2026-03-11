@@ -27,7 +27,7 @@ import {
 import { TransactionCard } from "@/components/transaction-card";
 import { useAuth, useExchangeRate } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import { mockTransactions, mockReceivers } from "@/lib/mock-data";
+import { mockTransactions, mockReceivers, mockUser } from "@/lib/mock";
 import type { Transaction, Receiver } from "@/types";
 
 export default function HomePage() {

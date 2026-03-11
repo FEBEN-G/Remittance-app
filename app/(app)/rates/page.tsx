@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/chart";
 import { useExchangeRate } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import { mockRateHistory, mockExchangeRate } from "@/lib/mock-data";
+import { mockRateHistory, mockExchangeRate } from "@/lib/mock";
 import type { ExchangeRateHistory } from "@/types";
 
 export default function RatesPage() {
@@ -57,9 +57,8 @@ export default function RatesPage() {
     setIsRefreshing(false);
   };
 
-  const filteredHistory = selectedPeriod === "7d" 
-    ? rateHistory.slice(-7) 
-    : rateHistory;
+  const filteredHistory =
+    selectedPeriod === "7d" ? rateHistory.slice(-7) : rateHistory;
 
   const chartData = filteredHistory.map((item) => ({
     date: new Date(item.date).toLocaleDateString("en-US", {
@@ -104,7 +103,9 @@ export default function RatesPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold text-foreground">{t("rates.title")}</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {t("rates.title")}
+          </h1>
         </div>
         <Button
           variant="outline"
@@ -113,7 +114,9 @@ export default function RatesPage() {
           onClick={handleRefresh}
           disabled={isRefreshing}
         >
-          <RefreshCw className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`} />
+          <RefreshCw
+            className={`h-4 w-4 ${isRefreshing ? "animate-spin" : ""}`}
+          />
           {t("common.refresh")}
         </Button>
       </div>
@@ -135,12 +138,16 @@ export default function RatesPage() {
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 rounded-full bg-white/20 px-3 py-1">
-              <span className="text-sm">1 USD = {rate.rate.toFixed(2)} ETB</span>
+              <span className="text-sm">
+                1 USD = {rate.rate.toFixed(2)} ETB
+              </span>
             </div>
             {rate.bonusRate && rate.bonusRate > 0 && (
               <div className="flex items-center gap-1 rounded-full bg-white/30 px-3 py-1">
                 <TrendingUp className="h-4 w-4" />
-                <span className="text-sm">+{rate.bonusRate.toFixed(2)} {t("rates.bonus")}</span>
+                <span className="text-sm">
+                  +{rate.bonusRate.toFixed(2)} {t("rates.bonus")}
+                </span>
               </div>
             )}
           </div>
@@ -152,20 +159,28 @@ export default function RatesPage() {
         <div className="mb-6 grid grid-cols-4 gap-3">
           <Card>
             <CardContent className="p-3 text-center">
-              <p className="text-lg font-bold text-foreground">{stats.min.toFixed(2)}</p>
+              <p className="text-lg font-bold text-foreground">
+                {stats.min.toFixed(2)}
+              </p>
               <p className="text-xs text-muted-foreground">{t("rates.low")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-3 text-center">
-              <p className="text-lg font-bold text-foreground">{stats.max.toFixed(2)}</p>
+              <p className="text-lg font-bold text-foreground">
+                {stats.max.toFixed(2)}
+              </p>
               <p className="text-xs text-muted-foreground">{t("rates.high")}</p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-3 text-center">
-              <p className="text-lg font-bold text-foreground">{stats.avg.toFixed(2)}</p>
-              <p className="text-xs text-muted-foreground">{t("rates.average")}</p>
+              <p className="text-lg font-bold text-foreground">
+                {stats.avg.toFixed(2)}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t("rates.average")}
+              </p>
             </CardContent>
           </Card>
           <Card>
@@ -178,13 +193,17 @@ export default function RatesPage() {
                 )}
                 <p
                   className={`text-lg font-bold ${
-                    parseFloat(stats.changePercent) >= 0 ? "text-success" : "text-destructive"
+                    parseFloat(stats.changePercent) >= 0
+                      ? "text-success"
+                      : "text-destructive"
                   }`}
                 >
                   {stats.changePercent}%
                 </p>
               </div>
-              <p className="text-xs text-muted-foreground">{t("rates.change")}</p>
+              <p className="text-xs text-muted-foreground">
+                {t("rates.change")}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -224,7 +243,10 @@ export default function RatesPage() {
             className="h-[300px]"
           >
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+              <AreaChart
+                data={chartData}
+                margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="colorRate" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#1c5f5d" stopOpacity={0.3} />
@@ -247,7 +269,10 @@ export default function RatesPage() {
                 />
                 <ChartTooltip
                   content={<ChartTooltipContent />}
-                  formatter={(value: number) => [`${value.toFixed(2)} ETB`, "Rate"]}
+                  formatter={(value: number) => [
+                    `${value.toFixed(2)} ETB`,
+                    "Rate",
+                  ]}
                 />
                 <Area
                   type="monotone"
@@ -267,8 +292,12 @@ export default function RatesPage() {
         <CardContent className="flex items-start gap-3 p-4">
           <Info className="mt-0.5 h-5 w-5 text-muted-foreground" />
           <div>
-            <p className="text-sm font-medium text-foreground">{t("rates.infoTitle")}</p>
-            <p className="text-xs text-muted-foreground">{t("rates.infoDescription")}</p>
+            <p className="text-sm font-medium text-foreground">
+              {t("rates.infoTitle")}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {t("rates.infoDescription")}
+            </p>
           </div>
         </CardContent>
       </Card>

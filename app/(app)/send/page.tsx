@@ -19,7 +19,7 @@ import { TransactionSummary } from "@/components/transaction-summary";
 import { PinInput } from "@/components/pin-input";
 import { useAuth, useExchangeRate } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import { mockReceivers, mockBanks } from "@/lib/mock-data";
+import { mockReceivers, mockBanks } from "@/lib/mock";
 import type { Receiver, TransactionDetails } from "@/types";
 
 type Step = "receiver" | "amount" | "review";

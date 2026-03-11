@@ -21,7 +21,7 @@ import {
 } from "antd";
 import { StatusBadge } from "@/components/status-badge";
 import { useLocale } from "@/hooks/use-locale";
-import { mockTransactions } from "@/lib/mock-data";
+import { mockTransactions } from "@/lib/mock";
 import type { Transaction } from "@/types";
 import { toast } from "sonner";
 

@@ -16,7 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { useLocale } from "@/hooks/use-locale";
-import { mockDonationCauses } from "@/lib/mock-data";
+import { mockDonationCauses } from "@/lib/mock";
 import type { DonationCause } from "@/types";
 
 export default function DonatePage() {
@@ -106,7 +106,9 @@ export default function DonatePage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold text-foreground">{t("donate.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {t("donate.title")}
+        </h1>
       </div>
 
       {/* Hero Section */}
@@ -163,7 +165,9 @@ export default function DonatePage() {
               <Card className="overflow-hidden transition-all hover:border-primary hover:shadow-md">
                 <CardContent className="p-0">
                   <div className="flex h-32 items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <div className={`rounded-full p-6 ${getCategoryColor(cause.category)}`}>
+                    <div
+                      className={`rounded-full p-6 ${getCategoryColor(cause.category)}`}
+                    >
                       {getCategoryIcon(cause.category)}
                     </div>
                   </div>
@@ -171,7 +175,7 @@ export default function DonatePage() {
                     <div className="mb-2 flex items-center gap-2">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs ${getCategoryColor(
-                          cause.category
+                          cause.category,
                         )}`}
                       >
                         {cause.category}
@@ -180,7 +184,9 @@ export default function DonatePage() {
                         {cause.organizationName}
                       </span>
                     </div>
-                    <h3 className="mb-1 font-semibold text-foreground">{cause.name}</h3>
+                    <h3 className="mb-1 font-semibold text-foreground">
+                      {cause.name}
+                    </h3>
                     <p className="mb-3 text-sm text-muted-foreground line-clamp-2">
                       {cause.description}
                     </p>

@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
-import { mockReferrals, mockReferralStats } from "@/lib/mock-data";
+import { mockReferrals, mockReferralStats } from "@/lib/mock";
 import type { Referral, ReferralStats } from "@/types";
 import { toast } from "sonner";
 
@@ -100,7 +100,9 @@ export default function ReferralsPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold text-foreground">{t("referral.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {t("referral.title")}
+        </h1>
       </div>
 
       {/* Referral Code Card */}
@@ -118,7 +120,9 @@ export default function ReferralsPage() {
             {t("referral.earnDescription")}
           </p>
           <div className="mb-4 rounded-lg bg-white/20 p-4">
-            <p className="mb-1 text-center text-xs opacity-80">{t("referral.yourCode")}</p>
+            <p className="mb-1 text-center text-xs opacity-80">
+              {t("referral.yourCode")}
+            </p>
             <p className="text-center text-2xl font-bold tracking-wider">
               {user?.referralCode}
             </p>
@@ -150,22 +154,34 @@ export default function ReferralsPage() {
           <Card>
             <CardContent className="p-4 text-center">
               <Users className="mx-auto mb-2 h-6 w-6 text-primary" />
-              <p className="text-2xl font-bold text-foreground">{stats.totalReferrals}</p>
-              <p className="text-xs text-muted-foreground">{t("referral.totalInvites")}</p>
+              <p className="text-2xl font-bold text-foreground">
+                {stats.totalReferrals}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t("referral.totalInvites")}
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
               <CheckCircle className="mx-auto mb-2 h-6 w-6 text-success" />
-              <p className="text-2xl font-bold text-foreground">{stats.activeReferrals}</p>
-              <p className="text-xs text-muted-foreground">{t("referral.active")}</p>
+              <p className="text-2xl font-bold text-foreground">
+                {stats.activeReferrals}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t("referral.active")}
+              </p>
             </CardContent>
           </Card>
           <Card>
             <CardContent className="p-4 text-center">
               <DollarSign className="mx-auto mb-2 h-6 w-6 text-warning-foreground" />
-              <p className="text-2xl font-bold text-foreground">${stats.totalEarnings}</p>
-              <p className="text-xs text-muted-foreground">{t("referral.earned")}</p>
+              <p className="text-2xl font-bold text-foreground">
+                ${stats.totalEarnings}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {t("referral.earned")}
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -174,7 +190,9 @@ export default function ReferralsPage() {
       {/* How It Works */}
       <Card className="mb-6">
         <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("referral.howItWorks")}</CardTitle>
+          <CardTitle className="text-base">
+            {t("referral.howItWorks")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-start gap-3">
@@ -182,8 +200,12 @@ export default function ReferralsPage() {
               1
             </div>
             <div>
-              <p className="font-medium text-foreground">{t("referral.step1Title")}</p>
-              <p className="text-sm text-muted-foreground">{t("referral.step1Description")}</p>
+              <p className="font-medium text-foreground">
+                {t("referral.step1Title")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("referral.step1Description")}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -191,8 +213,12 @@ export default function ReferralsPage() {
               2
             </div>
             <div>
-              <p className="font-medium text-foreground">{t("referral.step2Title")}</p>
-              <p className="text-sm text-muted-foreground">{t("referral.step2Description")}</p>
+              <p className="font-medium text-foreground">
+                {t("referral.step2Title")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("referral.step2Description")}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -200,8 +226,12 @@ export default function ReferralsPage() {
               3
             </div>
             <div>
-              <p className="font-medium text-foreground">{t("referral.step3Title")}</p>
-              <p className="text-sm text-muted-foreground">{t("referral.step3Description")}</p>
+              <p className="font-medium text-foreground">
+                {t("referral.step3Title")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("referral.step3Description")}
+              </p>
             </div>
           </div>
         </CardContent>
@@ -210,7 +240,9 @@ export default function ReferralsPage() {
       {/* Referral List */}
       <Card>
         <CardHeader className="pb-2">
-          <CardTitle className="text-base">{t("referral.yourReferrals")}</CardTitle>
+          <CardTitle className="text-base">
+            {t("referral.yourReferrals")}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           {referrals.length > 0 ? (
@@ -226,7 +258,9 @@ export default function ReferralsPage() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium text-foreground">{referral.referredUserName}</p>
+                    <p className="font-medium text-foreground">
+                      {referral.referredUserName}
+                    </p>
                     <p className="text-xs text-muted-foreground">
                       {new Date(referral.createdAt).toLocaleDateString()}
                     </p>
@@ -235,7 +269,7 @@ export default function ReferralsPage() {
                 <div className="flex items-center gap-2">
                   <span
                     className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs ${getStatusColor(
-                      referral.status
+                      referral.status,
                     )}`}
                   >
                     {getStatusIcon(referral.status)}
@@ -250,7 +284,9 @@ export default function ReferralsPage() {
             <div className="flex flex-col items-center gap-4 py-8 text-center">
               <Users className="h-12 w-12 text-muted-foreground/50" />
               <div>
-                <p className="font-medium text-foreground">{t("referral.noReferrals")}</p>
+                <p className="font-medium text-foreground">
+                  {t("referral.noReferrals")}
+                </p>
                 <p className="text-sm text-muted-foreground">
                   {t("referral.startInviting")}
                 </p>

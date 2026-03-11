@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocale } from "@/hooks/use-locale";
-import { mockGiftPackages } from "@/lib/mock-data";
+import { mockGiftPackages } from "@/lib/mock";
 import type { GiftPackage } from "@/types";
 
 export default function GiftsPage() {
@@ -91,7 +91,9 @@ export default function GiftsPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold text-foreground">{t("gifts.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {t("gifts.title")}
+        </h1>
       </div>
 
       {/* Hero Section */}
@@ -147,7 +149,9 @@ export default function GiftsPage() {
               <CardContent className="p-0">
                 <div className="flex">
                   <div className="flex h-28 w-28 flex-shrink-0 items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <div className={`rounded-full p-4 ${getCategoryColor(pkg.category)}`}>
+                    <div
+                      className={`rounded-full p-4 ${getCategoryColor(pkg.category)}`}
+                    >
                       {getCategoryIcon(pkg.category)}
                     </div>
                   </div>
@@ -155,13 +159,15 @@ export default function GiftsPage() {
                     <div className="mb-1 flex items-center gap-2">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs ${getCategoryColor(
-                          pkg.category
+                          pkg.category,
                         )}`}
                       >
                         {pkg.category}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-foreground">{pkg.name}</h3>
+                    <h3 className="font-semibold text-foreground">
+                      {pkg.name}
+                    </h3>
                     <p className="mb-2 text-xs text-muted-foreground line-clamp-2">
                       {pkg.description}
                     </p>

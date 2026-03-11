@@ -42,7 +42,7 @@ import {
 } from "@/components/ui/sheet";
 import { TransactionCard } from "@/components/transaction-card";
 import { useLocale } from "@/hooks/use-locale";
-import { mockTransactions } from "@/lib/mock-data";
+import { mockTransactions } from "@/lib/mock";
 import type { Transaction, TransactionStatus } from "@/types";
 import { toast } from "sonner";
 

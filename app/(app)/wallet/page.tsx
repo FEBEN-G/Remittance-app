@@ -17,7 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useLocale } from "@/hooks/use-locale";
-import { mockWallets, mockPaymentMethods } from "@/lib/mock-data";
+import { mockWallets, mockPaymentMethods } from "@/lib/mock";
 import type { Wallet, PaymentMethod } from "@/types";
 
 export default function WalletPage() {
@@ -85,14 +85,18 @@ export default function WalletPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
         </Link>
-        <h1 className="text-xl font-bold text-foreground">{t("wallet.title")}</h1>
+        <h1 className="text-xl font-bold text-foreground">
+          {t("wallet.title")}
+        </h1>
       </div>
 
       {/* Total Balance Card */}
       <Card className="mb-6 overflow-hidden bg-gradient-to-br from-primary to-secondary text-primary-foreground">
         <CardContent className="p-6">
           <div className="mb-4 flex items-center justify-between">
-            <span className="text-sm opacity-90">{t("wallet.totalBalance")}</span>
+            <span className="text-sm opacity-90">
+              {t("wallet.totalBalance")}
+            </span>
             <button
               onClick={() => setShowBalance(!showBalance)}
               className="rounded-full p-1 transition-colors hover:bg-white/20"
@@ -150,17 +154,23 @@ export default function WalletPage() {
                     {wallet.currency} {t("wallet.wallet")}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    {t("wallet.available")}: {showBalance ? formatCurrency(wallet.availableBalance, wallet.currency) : "****"}
+                    {t("wallet.available")}:{" "}
+                    {showBalance
+                      ? formatCurrency(wallet.availableBalance, wallet.currency)
+                      : "****"}
                   </p>
                 </div>
               </div>
               <div className="text-right">
                 <p className="font-semibold text-foreground">
-                  {showBalance ? formatCurrency(wallet.balance, wallet.currency) : "****"}
+                  {showBalance
+                    ? formatCurrency(wallet.balance, wallet.currency)
+                    : "****"}
                 </p>
                 {wallet.pendingBalance > 0 && (
                   <p className="text-xs text-warning-foreground">
-                    +{formatCurrency(wallet.pendingBalance, wallet.currency)} {t("wallet.pending")}
+                    +{formatCurrency(wallet.pendingBalance, wallet.currency)}{" "}
+                    {t("wallet.pending")}
                   </p>
                 )}
               </div>
@@ -177,7 +187,9 @@ export default function WalletPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success/10 transition-colors group-hover:bg-success/20">
                 <ArrowDownLeft className="h-5 w-5 text-success" />
               </div>
-              <span className="text-xs text-foreground">{t("wallet.deposit")}</span>
+              <span className="text-xs text-foreground">
+                {t("wallet.deposit")}
+              </span>
             </CardContent>
           </Card>
         </Link>
@@ -187,7 +199,9 @@ export default function WalletPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <ArrowUpRight className="h-5 w-5 text-primary" />
               </div>
-              <span className="text-xs text-foreground">{t("wallet.send")}</span>
+              <span className="text-xs text-foreground">
+                {t("wallet.send")}
+              </span>
             </CardContent>
           </Card>
         </Link>
@@ -197,7 +211,9 @@ export default function WalletPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-secondary/10 transition-colors group-hover:bg-secondary/20">
                 <TrendingUp className="h-5 w-5 text-secondary" />
               </div>
-              <span className="text-xs text-foreground">{t("wallet.exchange")}</span>
+              <span className="text-xs text-foreground">
+                {t("wallet.exchange")}
+              </span>
             </CardContent>
           </Card>
         </Link>
@@ -207,7 +223,9 @@ export default function WalletPage() {
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent transition-colors group-hover:bg-accent/80">
                 <CreditCard className="h-5 w-5 text-accent-foreground" />
               </div>
-              <span className="text-xs text-foreground">{t("wallet.cards")}</span>
+              <span className="text-xs text-foreground">
+                {t("wallet.cards")}
+              </span>
             </CardContent>
           </Card>
         </Link>
@@ -216,7 +234,9 @@ export default function WalletPage() {
       {/* Payment Methods */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-2">
-          <CardTitle className="text-base">{t("wallet.paymentMethods")}</CardTitle>
+          <CardTitle className="text-base">
+            {t("wallet.paymentMethods")}
+          </CardTitle>
           <Link href="/wallet/cards/add">
             <Button variant="ghost" size="sm" className="gap-1 text-xs">
               <Plus className="h-3 w-3" />
@@ -233,10 +253,12 @@ export default function WalletPage() {
                     {getCardIcon(method.type)}
                     <div>
                       <p className="font-medium text-foreground">
-                        {method.type === "mastercard" ? "Mastercard" : "Visa"} ****{method.lastFourDigits}
+                        {method.type === "mastercard" ? "Mastercard" : "Visa"}{" "}
+                        ****{method.lastFourDigits}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {t("wallet.expires")} {method.expiryMonth}/{method.expiryYear}
+                        {t("wallet.expires")} {method.expiryMonth}/
+                        {method.expiryYear}
                       </p>
                     </div>
                   </div>
@@ -255,8 +277,12 @@ export default function WalletPage() {
             <div className="flex flex-col items-center gap-4 py-8 text-center">
               <CreditCard className="h-12 w-12 text-muted-foreground/50" />
               <div>
-                <p className="font-medium text-foreground">{t("wallet.noCards")}</p>
-                <p className="text-sm text-muted-foreground">{t("wallet.addCardDescription")}</p>
+                <p className="font-medium text-foreground">
+                  {t("wallet.noCards")}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  {t("wallet.addCardDescription")}
+                </p>
               </div>
               <Link href="/wallet/cards/add">
                 <Button size="sm">{t("wallet.addCard")}</Button>

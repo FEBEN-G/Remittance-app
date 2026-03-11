@@ -20,11 +20,11 @@ import {
 
 const { Text, Title, Paragraph } = Typography;
 
-interface KYCIncompleteMockProps {
+interface KYCResumeCardProps {
   onResume: () => void;
 }
 
-export function KYCIncompleteMock({ onResume }: KYCIncompleteMockProps) {
+export function KYCResumeCard({ onResume }: KYCResumeCardProps) {
   const requirements = [
     {
       id: "identity",

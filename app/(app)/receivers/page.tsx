@@ -2,7 +2,14 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Plus, Search, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Plus,
+  Search,
+  MoreVertical,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -25,7 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ReceiverCard } from "@/components/receiver-card";
 import { useLocale } from "@/hooks/use-locale";
-import { mockReceivers, mockBanks } from "@/lib/mock-data";
+import { mockReceivers, mockBanks } from "@/lib/mock";
 import type { Receiver } from "@/types";
 
 export default function ReceiversPage() {
@@ -55,7 +62,7 @@ export default function ReceiversPage() {
   };
 
   const filteredReceivers = receivers.filter((r) =>
-    r.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+    r.fullName.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const handleDelete = async () => {
@@ -85,7 +92,9 @@ export default function ReceiversPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-xl font-bold text-foreground">{t("receivers.title")}</h1>
+            <h1 className="text-xl font-bold text-foreground">
+              {t("receivers.title")}
+            </h1>
             <p className="text-sm text-muted-foreground">
               {receivers.length} {t("receivers.subtitle")}
             </p>
@@ -122,7 +131,9 @@ export default function ReceiversPage() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1">
-                  <p className="font-medium text-foreground">{receiver.fullName}</p>
+                  <p className="font-medium text-foreground">
+                    {receiver.fullName}
+                  </p>
                   <p className="text-sm text-muted-foreground">
                     {mockBanks.find((b) => b.code === receiver.bankCode)?.name}
                   </p>
@@ -142,7 +153,10 @@ export default function ReceiversPage() {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuItem asChild>
-                        <Link href={`/receivers/${receiver.id}/edit`} className="flex items-center gap-2">
+                        <Link
+                          href={`/receivers/${receiver.id}/edit`}
+                          className="flex items-center gap-2"
+                        >
                           <Pencil className="h-4 w-4" />
                           {t("common.edit")}
                         </Link>
@@ -166,8 +180,12 @@ export default function ReceiversPage() {
               <Search className="h-8 w-8 text-muted-foreground" />
             </div>
             <div>
-              <p className="font-medium text-foreground">{t("receivers.noResults")}</p>
-              <p className="text-sm text-muted-foreground">{t("receivers.noResultsDesc")}</p>
+              <p className="font-medium text-foreground">
+                {t("receivers.noResults")}
+              </p>
+              <p className="text-sm text-muted-foreground">
+                {t("receivers.noResultsDesc")}
+              </p>
             </div>
             {searchQuery && (
               <Button variant="outline" onClick={() => setSearchQuery("")}>
@@ -179,12 +197,17 @@ export default function ReceiversPage() {
       </div>
 
       {/* Delete Confirmation */}
-      <AlertDialog open={!!deleteReceiver} onOpenChange={() => setDeleteReceiver(null)}>
+      <AlertDialog
+        open={!!deleteReceiver}
+        onOpenChange={() => setDeleteReceiver(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>{t("receivers.deleteTitle")}</AlertDialogTitle>
             <AlertDialogDescription>
-              {t("receivers.deleteDescription", { name: deleteReceiver?.fullName })}
+              {t("receivers.deleteDescription", {
+                name: deleteReceiver?.fullName || "this receiver",
+              })}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

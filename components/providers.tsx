@@ -83,7 +83,7 @@ function ExchangeRateProvider({ children }: { children: ReactNode }) {
         response.error,
       );
       // Fallback to mock data for demo/dev purposes
-      const { mockExchangeRate } = require("@/lib/mock-data");
+      const { mockExchangeRate } = require("@/lib/mock");
       setRate(mockExchangeRate);
       setError(null); // Clear error since we have a fallback
     }

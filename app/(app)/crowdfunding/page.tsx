@@ -18,7 +18,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { useLocale } from "@/hooks/use-locale";
-import { mockCrowdfundingCampaigns } from "@/lib/mock-data";
+import { mockCrowdfundingCampaigns } from "@/lib/mock";
 import type { CrowdfundingCampaign } from "@/types";
 
 export default function CrowdfundingPage() {
@@ -40,7 +40,11 @@ export default function CrowdfundingPage() {
   const categories = [
     { id: "medical", label: t("crowdfunding.medical"), icon: Heart },
     { id: "business", label: t("crowdfunding.business"), icon: Briefcase },
-    { id: "education", label: t("crowdfunding.education"), icon: GraduationCap },
+    {
+      id: "education",
+      label: t("crowdfunding.education"),
+      icon: GraduationCap,
+    },
     { id: "emergency", label: t("crowdfunding.emergency"), icon: AlertCircle },
     { id: "community", label: t("crowdfunding.community"), icon: Users },
   ];
@@ -94,7 +98,9 @@ export default function CrowdfundingPage() {
   const getDaysRemaining = (endDate: string) => {
     const end = new Date(endDate);
     const now = new Date();
-    const diff = Math.ceil((end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+    const diff = Math.ceil(
+      (end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
+    );
     return diff > 0 ? diff : 0;
   };
 
@@ -116,7 +122,9 @@ export default function CrowdfundingPage() {
               <ArrowLeft className="h-5 w-5" />
             </Button>
           </Link>
-          <h1 className="text-xl font-bold text-foreground">{t("crowdfunding.title")}</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {t("crowdfunding.title")}
+          </h1>
         </div>
         <Link href="/crowdfunding/create">
           <Button size="sm" className="gap-2">
@@ -174,14 +182,17 @@ export default function CrowdfundingPage() {
       {/* Campaigns */}
       <div className="space-y-4">
         {filteredCampaigns.map((campaign) => {
-          const progress = (campaign.raisedAmount / campaign.targetAmount) * 100;
+          const progress =
+            (campaign.raisedAmount / campaign.targetAmount) * 100;
           const daysRemaining = getDaysRemaining(campaign.endDate);
           return (
             <Link key={campaign.id} href={`/crowdfunding/${campaign.id}`}>
               <Card className="overflow-hidden transition-all hover:border-primary hover:shadow-md">
                 <CardContent className="p-0">
                   <div className="flex h-32 items-center justify-center bg-gradient-to-br from-primary/20 to-secondary/20">
-                    <div className={`rounded-full p-6 ${getCategoryColor(campaign.category)}`}>
+                    <div
+                      className={`rounded-full p-6 ${getCategoryColor(campaign.category)}`}
+                    >
                       {getCategoryIcon(campaign.category)}
                     </div>
                   </div>
@@ -189,7 +200,7 @@ export default function CrowdfundingPage() {
                     <div className="mb-2 flex items-center gap-2">
                       <span
                         className={`rounded-full px-2 py-0.5 text-xs ${getCategoryColor(
-                          campaign.category
+                          campaign.category,
                         )}`}
                       >
                         {campaign.category}
@@ -199,7 +210,9 @@ export default function CrowdfundingPage() {
                         {daysRemaining} {t("crowdfunding.daysLeft")}
                       </div>
                     </div>
-                    <h3 className="mb-1 font-semibold text-foreground">{campaign.title}</h3>
+                    <h3 className="mb-1 font-semibold text-foreground">
+                      {campaign.title}
+                    </h3>
                     <div className="mb-2 flex items-center gap-2">
                       <Avatar className="h-5 w-5">
                         <AvatarFallback className="bg-primary/10 text-xs text-primary">
