@@ -39,6 +39,7 @@ import {
 import { StatusBadge } from "@/components/status-badge";
 import { useAuth } from "@/lib/store";
 import { useLocale } from "@/hooks/use-locale";
+import { useTheme } from "next-themes";
 import { toast } from "sonner";
 
 const { Text, Title } = Typography;
@@ -47,10 +48,10 @@ export default function ProfilePage() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const { t, locale, setLocale } = useLocale();
+  const { resolvedTheme, setTheme } = useTheme();
   const [showLogout, setShowLogout] = useState(false);
   const [showDeleteAccount, setShowDeleteAccount] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName[0]}${lastName[0]}`.toUpperCase();
@@ -70,8 +71,7 @@ export default function ProfilePage() {
   };
 
   const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle("dark");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
   const accountItems = [
@@ -330,7 +330,7 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-muted/60">
-                {isDarkMode ? (
+                {resolvedTheme === "dark" ? (
                   <Moon className="h-4 w-4 text-muted-foreground" />
                 ) : (
                   <Sun className="h-4 w-4 text-muted-foreground" />
@@ -340,7 +340,10 @@ export default function ProfilePage() {
                 {t("profile.darkMode")}
               </span>
             </div>
-            <Switch checked={isDarkMode} onChange={toggleDarkMode} />
+            <Switch
+              checked={resolvedTheme === "dark"}
+              onChange={toggleDarkMode}
+            />
           </div>
         </div>
       </AntCard>

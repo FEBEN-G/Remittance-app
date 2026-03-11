@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Mail, Loader2, Globe, TrendingUp } from "lucide-react";
+import { Mail, Loader2, Globe } from "lucide-react";
 import { PinInput } from "@/components/pin-input";
 import {
   Form,
@@ -201,23 +201,6 @@ export default function LoginPage() {
           </div>
 
           <div className="pt-2">
-            <div className="rounded-2xl bg-primary/5 p-4 border border-primary/10 flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-xl bg-primary/10">
-                  <TrendingUp className="h-4 w-4 text-primary" />
-                </div>
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
-                    Live Rate
-                  </p>
-                  <p className="text-sm font-bold text-foreground">
-                    1 USD = {mockExchangeRate.rate.toFixed(2)} ETB
-                  </p>
-                </div>
-              </div>
-              <Globe className="h-4 w-4 text-primary/40" />
-            </div>
-
             <p className="text-sm text-center text-muted-foreground mb-4">
               {"Don't have an account?"}{" "}
               <Link

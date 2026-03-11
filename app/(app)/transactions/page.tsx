@@ -241,9 +241,7 @@ export default function TransactionsPage() {
         </AntCard>
         <AntCard className="bg-warning/10 border-warning/20">
           <div className="p-1 text-center">
-            <p className="text-2xl font-bold text-warning-foreground">
-              {stats.pending}
-            </p>
+            <p className="text-2xl font-bold text-warning">{stats.pending}</p>
             <p className="text-xs text-muted-foreground">
               {t("transactions.pending")}
             </p>

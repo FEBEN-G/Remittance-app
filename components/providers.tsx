@@ -220,6 +220,42 @@ function SendMoneyProvider({ children }: { children: ReactNode }) {
   );
 }
 
+import { ConfigProvider, theme as antTheme } from "antd";
+import { useTheme } from "next-themes";
+
+// Theme Config Provider for Ant Design
+function ThemeConfigProvider({ children }: { children: ReactNode }) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch by waiting for mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return <div className="invisible">{children}</div>;
+  }
+
+  return (
+    <ConfigProvider
+      theme={{
+        algorithm:
+          resolvedTheme === "dark"
+            ? antTheme.darkAlgorithm
+            : antTheme.defaultAlgorithm,
+        token: {
+          colorPrimary: "#6D28D9", // Matches oklch(0.65 0.22 260)
+          borderRadius: 12,
+          fontFamily: "var(--font-sans)",
+        },
+      }}
+    >
+      {children}
+    </ConfigProvider>
+  );
+}
+
 // Combined Providers
 export function Providers({ children }: { children: ReactNode }) {
   return (
@@ -229,16 +265,18 @@ export function Providers({ children }: { children: ReactNode }) {
       enableSystem
       disableTransitionOnChange
     >
-      <AuthProvider>
-        <ExchangeRateProvider>
-          <NotificationProvider>
-            <SendMoneyProvider>
-              {children}
-              <Toaster position="top-right" richColors />
-            </SendMoneyProvider>
-          </NotificationProvider>
-        </ExchangeRateProvider>
-      </AuthProvider>
+      <ThemeConfigProvider>
+        <AuthProvider>
+          <ExchangeRateProvider>
+            <NotificationProvider>
+              <SendMoneyProvider>
+                {children}
+                <Toaster position="top-right" richColors />
+              </SendMoneyProvider>
+            </NotificationProvider>
+          </ExchangeRateProvider>
+        </AuthProvider>
+      </ThemeConfigProvider>
     </ThemeProvider>
   );
 }

@@ -96,7 +96,8 @@ export default function HomePage() {
             className="shadow-md rounded-4xl border-border bg-background/95 backdrop-blur-sm overflow-hidden group"
             styles={{
               header: {
-                borderBottom: "1px solid rgba(var(--border), 0.1)",
+                borderBottom: "1px solid var(--border)",
+                opacity: 0.6,
                 padding: "1.5rem 2rem",
               },
               body: { padding: "2rem", background: "transparent" },
@@ -162,7 +163,7 @@ export default function HomePage() {
                 </div>
               </div>
               {rate && rate.bonusRate && rate.bonusRate > 0 && (
-                <div className="flex items-center gap-3 font-black bg-emerald-500/10 text-emerald-600 px-6 py-3 rounded-2xl border border-emerald-500/20 shadow-lg shadow-emerald-500/5 animate-in slide-in-from-right-4 duration-500">
+                <div className="flex items-center gap-3 font-black bg-success/10 text-success px-6 py-3 rounded-2xl border border-success/20 shadow-lg shadow-success/5 animate-in slide-in-from-right-4 duration-500">
                   <div className="relative">
                     <TrendingUp className="h-5 w-5" />
                     <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
@@ -316,11 +317,11 @@ export default function HomePage() {
               <Link href="/referrals" className="block group">
                 <AntCard
                   hoverable
-                  className="rounded-3xl border-border/40 bg-linear-to-r from-blue-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-blue-500/10 dark:from-blue-500/20 to-transparent backdrop-blur-sm overflow-hidden"
                   styles={{ body: { padding: "1.25rem" } }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 text-blue-500 group-hover:scale-110 transition-transform">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-500/20 dark:bg-blue-500/30 text-blue-500 group-hover:scale-110 transition-transform">
                       <Users className="h-6 w-6" />
                     </div>
                     <div>
@@ -338,11 +339,11 @@ export default function HomePage() {
               <Link href="/donate" className="block group">
                 <AntCard
                   hoverable
-                  className="rounded-3xl border-border/40 bg-linear-to-r from-rose-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-rose-500/10 dark:from-rose-500/20 to-transparent backdrop-blur-sm overflow-hidden"
                   styles={{ body: { padding: "1.25rem" } }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/20 text-rose-500 group-hover:scale-110 transition-transform">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-500/20 dark:bg-rose-500/30 text-rose-500 group-hover:scale-110 transition-transform">
                       <Heart className="h-6 w-6" />
                     </div>
                     <div>
@@ -360,11 +361,11 @@ export default function HomePage() {
               <Link href="/crowdfunding" className="block group">
                 <AntCard
                   hoverable
-                  className="rounded-3xl border-border/40 bg-linear-to-r from-purple-500/10 to-transparent backdrop-blur-sm overflow-hidden"
+                  className="rounded-3xl border-border/40 bg-linear-to-r from-purple-500/10 dark:from-purple-500/20 to-transparent backdrop-blur-sm overflow-hidden"
                   styles={{ body: { padding: "1.25rem" } }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/20 text-purple-500 group-hover:scale-110 transition-transform">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-500/20 dark:bg-purple-500/30 text-purple-500 group-hover:scale-110 transition-transform">
                       <TrendingUp className="h-6 w-6" />
                     </div>
                     <div>

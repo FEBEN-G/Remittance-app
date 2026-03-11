@@ -221,7 +221,7 @@ function SendMoneyContent() {
                 showIcon
                 closable
                 onClose={() => setError("")}
-                className="mb-6 rounded-2xl border-amber-500/20 bg-amber-500/5 shadow-sm overflow-hidden"
+                className="mb-6 rounded-2xl border-warning/20 bg-warning/5 dark:bg-warning/10 shadow-sm overflow-hidden"
               />
             )}
 
@@ -241,7 +241,7 @@ function SendMoneyContent() {
             >
               <AntCard
                 hoverable
-                className="group border-dashed border-2 grow bg-primary/2 border-primary/20 hover:border-primary/50 hover:bg-primary/4 transition-all duration-300 rounded-4xl shadow-sm hover:shadow-primary/5"
+                className="group border-dashed border-2 grow bg-primary/2 dark:bg-primary/5 border-primary/20 hover:border-primary/50 hover:bg-primary/4 dark:hover:bg-primary/10 transition-all duration-300 rounded-4xl shadow-sm hover:shadow-primary/5"
                 styles={{ body: { padding: "1.5rem" } }}
               >
                 <div className="flex items-center gap-5">
@@ -283,7 +283,7 @@ function SendMoneyContent() {
                       <div className="relative">
                         <AntAvatar
                           size={64}
-                          className="border-2 border-primary/20 bg-primary/5 transition-transform duration-500 group-hover:rotate-6"
+                          className="border-2 border-primary/20 bg-primary/5 dark:bg-primary/10 transition-transform duration-500 group-hover:rotate-6"
                         >
                           {getInitials(receiver.fullName)}
                         </AntAvatar>
@@ -345,7 +345,7 @@ function SendMoneyContent() {
                       >
                         {getInitials(selectedReceiver.fullName)}
                       </AntAvatar>
-                      <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-lg bg-emerald-500 flex items-center justify-center shadow-lg border-2 border-background">
+                      <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-lg bg-success flex items-center justify-center shadow-lg border-2 border-background">
                         <Check className="h-3 w-3 text-white" />
                       </div>
                     </div>
@@ -503,9 +503,9 @@ function SendMoneyContent() {
         {transactionDetails && (
           <div className="space-y-10 py-10 text-center animate-in zoom-in-95 duration-700 ease-out">
             <div className="relative mx-auto flex h-32 w-32 items-center justify-center">
-              <div className="absolute inset-0 rounded-full bg-emerald-500/20 animate-ping duration-3000" />
-              <div className="absolute inset-0 rounded-full bg-emerald-500/10 animate-pulse" />
-              <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-emerald-500 text-white shadow-2xl shadow-emerald-500/40 rotate-12 animate-in slide-in-from-bottom-4 duration-1000">
+              <div className="absolute inset-0 rounded-full bg-success/20 animate-ping duration-3000" />
+              <div className="absolute inset-0 rounded-full bg-success/10 animate-pulse" />
+              <div className="relative flex h-24 w-24 items-center justify-center rounded-3xl bg-success text-success-foreground shadow-2xl shadow-success/40 rotate-12 animate-in slide-in-from-bottom-4 duration-1000">
                 <Check className="h-12 w-12 stroke-3" />
               </div>
             </div>
@@ -550,10 +550,10 @@ function SendMoneyContent() {
                     </div>
                     <div className="h-10 w-px bg-border/40 rotate-12" />
                     <div className="text-right">
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-500/60 mb-1">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-success/60 mb-1">
                         Recipient Gets
                       </p>
-                      <p className="text-2xl font-black text-emerald-500 tracking-tight">
+                      <p className="text-2xl font-black text-success tracking-tight">
                         {transactionDetails.receiveAmount.toLocaleString()}{" "}
                         <span className="text-sm">ETB</span>
                       </p>
